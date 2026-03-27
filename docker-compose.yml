@@ -1,0 +1,307 @@
+##############################################################################
+# CloudMart – Ecommerce con Service Mesh (Dev Environment)
+# Docker Compose – Orquestación local de todos los microservicios
+##############################################################################
+version: "3.9"
+
+x-go-service: &go-service-defaults
+  restart: unless-stopped
+  networks:
+    - cloudmart-net
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
+
+services:
+  # ─────────────────────────── Infrastructure ───────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: cloudmart-postgres
+    environment:
+      POSTGRES_USER: cloudmart
+      POSTGRES_PASSWORD: cloudmart_secret
+      POSTGRES_DB: cloudmart
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cloudmart"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - cloudmart-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: cloudmart-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --maxmemory 128mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - cloudmart-net
+
+  nats:
+    image: nats:2.10-alpine
+    container_name: cloudmart-nats
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    command: ["--jetstream", "--store_dir=/data", "-m", "8222"]
+    volumes:
+      - nats-data:/data
+    healthcheck:
+      test: ["CMD", "nats-server", "--help"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - cloudmart-net
+
+  # ─────────────────────────── Observability ────────────────────────────
+  prometheus:
+    image: prom/prometheus:v2.51.0
+    container_name: cloudmart-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./infra/prometheus/alerts.yml:/etc/prometheus/alerts.yml
+      - prometheus-data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.retention.time=7d"
+      - "--web.enable-lifecycle"
+    networks:
+      - cloudmart-net
+
+  grafana:
+    image: grafana/grafana:10.4.0
+    container_name: cloudmart-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: cloudmart
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    volumes:
+      - ./infra/grafana/provisioning:/etc/grafana/provisioning
+      - ./infra/grafana/dashboards:/var/lib/grafana/dashboards
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - prometheus
+      - jaeger
+    networks:
+      - cloudmart-net
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.55
+    container_name: cloudmart-jaeger
+    ports:
+      - "16686:16686"
+      - "14268:14268"
+      - "4317:4317"
+      - "4318:4318"
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    networks:
+      - cloudmart-net
+
+  # ─────────────────────────── Microservices ────────────────────────────
+  api-gateway:
+    <<: *go-service-defaults
+    build:
+      context: ./services/api-gateway
+      dockerfile: Dockerfile
+    container_name: cloudmart-api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: "8080"
+      USER_SERVICE_URL: http://user-service:8081
+      PRODUCT_SERVICE_URL: http://product-service:8082
+      ORDER_SERVICE_URL: http://order-service:8083
+      PAYMENT_SERVICE_URL: http://payment-service:8084
+      INVENTORY_SERVICE_URL: http://inventory-service:8085
+      NOTIFICATION_SERVICE_URL: http://notification-service:8086
+      REDIS_URL: redis:6379
+      JAEGER_ENDPOINT: http://jaeger:4318/v1/traces
+      LOG_LEVEL: debug
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  user-service:
+    <<: *go-service-defaults
+    build:
+      context: ./services/user-service
+      dockerfile: Dockerfile
+    container_name: cloudmart-user-service
+    ports:
+      - "8081:8081"
+    environment:
+      PORT: "8081"
+      DATABASE_URL: postgres://cloudmart:cloudmart_secret@postgres:5432/cloudmart?sslmode=disable
+      REDIS_URL: redis:6379
+      NATS_URL: nats://nats:4222
+      JAEGER_ENDPOINT: http://jaeger:4318/v1/traces
+      JWT_SECRET: cloudmart-super-secret-key-2026
+      LOG_LEVEL: debug
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      nats:
+        condition: service_started
+
+  product-service:
+    <<: *go-service-defaults
+    build:
+      context: ./services/product-service
+      dockerfile: Dockerfile
+    container_name: cloudmart-product-service
+    ports:
+      - "8082:8082"
+    environment:
+      PORT: "8082"
+      DATABASE_URL: postgres://cloudmart:cloudmart_secret@postgres:5432/cloudmart?sslmode=disable
+      REDIS_URL: redis:6379
+      NATS_URL: nats://nats:4222
+      JAEGER_ENDPOINT: http://jaeger:4318/v1/traces
+      LOG_LEVEL: debug
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  order-service:
+    <<: *go-service-defaults
+    build:
+      context: ./services/order-service
+      dockerfile: Dockerfile
+    container_name: cloudmart-order-service
+    ports:
+      - "8083:8083"
+    environment:
+      PORT: "8083"
+      DATABASE_URL: postgres://cloudmart:cloudmart_secret@postgres:5432/cloudmart?sslmode=disable
+      REDIS_URL: redis:6379
+      NATS_URL: nats://nats:4222
+      JAEGER_ENDPOINT: http://jaeger:4318/v1/traces
+      PRODUCT_SERVICE_URL: http://product-service:8082
+      INVENTORY_SERVICE_URL: http://inventory-service:8085
+      PAYMENT_SERVICE_URL: http://payment-service:8084
+      LOG_LEVEL: debug
+    depends_on:
+      postgres:
+        condition: service_healthy
+      nats:
+        condition: service_started
+
+  payment-service:
+    <<: *go-service-defaults
+    build:
+      context: ./services/payment-service
+      dockerfile: Dockerfile
+    container_name: cloudmart-payment-service
+    ports:
+      - "8084:8084"
+    environment:
+      PORT: "8084"
+      DATABASE_URL: postgres://cloudmart:cloudmart_secret@postgres:5432/cloudmart?sslmode=disable
+      NATS_URL: nats://nats:4222
+      JAEGER_ENDPOINT: http://jaeger:4318/v1/traces
+      STRIPE_SECRET_KEY: sk_test_placeholder
+      LOG_LEVEL: debug
+    depends_on:
+      postgres:
+        condition: service_healthy
+      nats:
+        condition: service_started
+
+  inventory-service:
+    <<: *go-service-defaults
+    build:
+      context: ./services/inventory-service
+      dockerfile: Dockerfile
+    container_name: cloudmart-inventory-service
+    ports:
+      - "8085:8085"
+    environment:
+      PORT: "8085"
+      DATABASE_URL: postgres://cloudmart:cloudmart_secret@postgres:5432/cloudmart?sslmode=disable
+      REDIS_URL: redis:6379
+      NATS_URL: nats://nats:4222
+      JAEGER_ENDPOINT: http://jaeger:4318/v1/traces
+      LOG_LEVEL: debug
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  notification-service:
+    <<: *go-service-defaults
+    build:
+      context: ./services/notification-service
+      dockerfile: Dockerfile
+    container_name: cloudmart-notification-service
+    ports:
+      - "8086:8086"
+    environment:
+      PORT: "8086"
+      NATS_URL: nats://nats:4222
+      JAEGER_ENDPOINT: http://jaeger:4318/v1/traces
+      SMTP_HOST: mailhog
+      SMTP_PORT: "1025"
+      LOG_LEVEL: debug
+    depends_on:
+      nats:
+        condition: service_started
+
+  # ─────────────────────────── Frontend ─────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: cloudmart-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      VITE_API_URL: http://localhost:8080/api/v1
+    depends_on:
+      - api-gateway
+    networks:
+      - cloudmart-net
+
+  # ─────────────────────────── Dev Tools ────────────────────────────────
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: cloudmart-mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - cloudmart-net
+
+volumes:
+  postgres-data:
+  nats-data:
+  prometheus-data:
+  grafana-data:
+
+networks:
+  cloudmart-net:
+    driver: bridge
+    name: cloudmart-network

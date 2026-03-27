@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: cloudmart
+  namespace: argocd
+spec:
+  description: CloudMart ecommerce platform
+  sourceRepos:
+    - "*"
+  destinations:
+    - namespace: cloudmart
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace
+    - group: policy
+      kind: PodDisruptionBudget
+  namespaceResourceWhitelist:
+    - group: ""
+      kind: "*"
+    - group: apps
+      kind: Deployment
+    - group: networking.istio.io
+      kind: "*"

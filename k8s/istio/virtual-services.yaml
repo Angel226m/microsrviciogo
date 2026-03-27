@@ -1,0 +1,97 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: frontend-vs
+  namespace: cloudmart
+spec:
+  hosts:
+    - "cloudmart.local"
+  gateways:
+    - cloudmart-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /api/
+      route:
+        - destination:
+            host: api-gateway
+            port:
+              number: 8080
+      timeout: 30s
+      retries:
+        attempts: 3
+        perTryTimeout: 10s
+        retryOn: gateway-error,connect-failure,refused-stream
+    - route:
+        - destination:
+            host: frontend
+            port:
+              number: 3000
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: api-gateway-vs
+  namespace: cloudmart
+spec:
+  hosts:
+    - api-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /api/v1/users
+        - uri:
+            prefix: /api/v1/auth
+      route:
+        - destination:
+            host: user-service
+            port:
+              number: 8081
+      timeout: 15s
+    - match:
+        - uri:
+            prefix: /api/v1/products
+      route:
+        - destination:
+            host: product-service
+            port:
+              number: 8082
+      timeout: 15s
+    - match:
+        - uri:
+            prefix: /api/v1/orders
+      route:
+        - destination:
+            host: order-service
+            port:
+              number: 8083
+      timeout: 20s
+    - match:
+        - uri:
+            prefix: /api/v1/payments
+      route:
+        - destination:
+            host: payment-service
+            port:
+              number: 8084
+      timeout: 30s
+    - match:
+        - uri:
+            prefix: /api/v1/stock
+        - uri:
+            prefix: /api/v1/movements
+      route:
+        - destination:
+            host: inventory-service
+            port:
+              number: 8085
+      timeout: 15s
+    - match:
+        - uri:
+            prefix: /api/v1/notifications
+      route:
+        - destination:
+            host: notification-service
+            port:
+              number: 8086
+      timeout: 15s
