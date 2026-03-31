@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════
-// User Service – Entry Point
-// Wires all hexagonal layers: domain -> application -> infrastructure
+// Servicio de Usuarios – Punto de Entrada
+// Conecta todas las capas hexagonales: dominio → aplicación → infraestructura
 // ═══════════════════════════════════════════════════════════════
 package main
 
@@ -32,38 +32,38 @@ func main() {
 	cfg := config.Load()
 	ctx := context.Background()
 
-	// ── Connect PostgreSQL ──────────────────────────────────
+	// ── Conectar PostgreSQL ──────────────────────────────────
 	pool, err := pgxpool.New(ctx, cfg.DatabaseURL)
 	if err != nil {
 		panic(fmt.Sprintf("failed to connect to database: %v", err))
 	}
 	defer pool.Close()
 
-	// ── Connect Redis ───────────────────────────────────────
+	// ── Conectar Redis ─────────────────────────────────────
 	rdb := redis.NewClient(&redis.Options{Addr: cfg.RedisURL})
 	defer rdb.Close()
 
-	// ── Connect NATS ────────────────────────────────────────
+	// ── Conectar NATS ──────────────────────────────────────
 	nc, err := nats.Connect(cfg.NatsURL)
 	if err != nil {
 		panic(fmt.Sprintf("failed to connect to NATS: %v", err))
 	}
 	defer nc.Close()
 
-	// ── Wire Hexagonal Architecture ─────────────────────────
-	// Driven adapters (infrastructure → domain ports)
+	// ── Cableado de Arquitectura Hexagonal ─────────────────────
+	// Adaptadores secundarios (infraestructura → puertos de dominio)
 	userRepo := repository.NewUserPostgresRepo(pool)
 	addrRepo := repository.NewAddressPostgresRepo(pool)
 	cacheAdapter := cache.NewRedisCache(rdb)
 	eventPub := messaging.NewNATSPublisher(nc)
 
-	// Application service (use cases)
+	// Servicio de aplicación (casos de uso)
 	userService := appservice.NewUserService(userRepo, addrRepo, cacheAdapter, eventPub, cfg.JWTSecret)
 
-	// Driving adapter (HTTP → application)
+	// Adaptador primario (HTTP → aplicación)
 	userHandler := handler.NewUserHandler(userService)
 
-	// ── Build Router ────────────────────────────────────────
+	// ── Construir Enrutador ──────────────────────────────────
 	r := chi.NewRouter()
 	r.Use(chimw.RequestID)
 	r.Use(chimw.RealIP)
@@ -77,7 +77,7 @@ func main() {
 
 	userHandler.RegisterRoutes(r)
 
-	// ── Start Server ────────────────────────────────────────
+	// ── Iniciar Servidor ────────────────────────────────────
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%s", cfg.Port),
 		Handler:      r,

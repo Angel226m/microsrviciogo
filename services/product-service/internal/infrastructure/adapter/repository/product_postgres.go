@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════════════
-// PostgreSQL Repository – Product driven adapter
+// Repositorio PostgreSQL – Adaptador secundario de Producto
+// Implementa port.ProductRepository, port.CategoryRepository, port.ReviewRepository
 // ═══════════════════════════════════════════════════════════════
 package repository
 
@@ -195,7 +196,7 @@ func (r *productPostgresRepo) Delete(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
-// ── Category Repository ───────────────────────────────────────────────
+// ── Repositorio de Categorías ───────────────────────────────────────────────
 
 type categoryPostgresRepo struct {
 	pool *pgxpool.Pool
@@ -240,7 +241,7 @@ func (r *categoryPostgresRepo) FindByID(ctx context.Context, id uuid.UUID) (*mod
 	return c, nil
 }
 
-// ── Review Repository ─────────────────────────────────────────────────
+// ── Repositorio de Reseñas ─────────────────────────────────────────────────
 
 type reviewPostgresRepo struct {
 	pool *pgxpool.Pool

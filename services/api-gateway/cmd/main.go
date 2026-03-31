@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════
-// CloudMart – API Gateway · Entry Point
-// Reverse proxy with auth, rate limiting, circuit breaker & tracing
+// CloudMart – API Gateway · Punto de Entrada
+// Proxy inverso con autenticación, limitación de tasa, circuit breaker y trazado
 // ═══════════════════════════════════════════════════════════════
 package main
 
@@ -13,21 +13,21 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/cloudmart/api-gateway/internal/infrastructure/config"
 	gateway "github.com/cloudmart/api-gateway/internal/infrastructure/adapter/http"
+	"github.com/cloudmart/api-gateway/internal/infrastructure/config"
 	"github.com/cloudmart/api-gateway/pkg/logger"
 	"github.com/cloudmart/api-gateway/pkg/telemetry"
 )
 
 func main() {
-	// ── Load configuration ──────────────────────────────────
+	// ── Cargar configuración ─────────────────────────────────
 	cfg := config.Load()
 
-	// ── Initialize logger ───────────────────────────────────
+	// ── Inicializar logger ──────────────────────────────────
 	log := logger.New(cfg.LogLevel)
 	defer log.Sync()
 
-	// ── Initialize OpenTelemetry ────────────────────────────
+	// ── Inicializar OpenTelemetry ────────────────────────────
 	tp, err := telemetry.InitTracer("api-gateway", cfg.JaegerEndpoint)
 	if err != nil {
 		log.Fatal("failed to initialize tracer", "error", err)
@@ -38,10 +38,10 @@ func main() {
 		tp.Shutdown(ctx)
 	}()
 
-	// ── Build router ────────────────────────────────────────
+	// ── Construir enrutador ──────────────────────────────────
 	router := gateway.NewRouter(cfg, log)
 
-	// ── Create HTTP server ──────────────────────────────────
+	// ── Crear servidor HTTP ──────────────────────────────────
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%s", cfg.Port),
 		Handler:      router,
@@ -50,7 +50,7 @@ func main() {
 		IdleTimeout:  60 * time.Second,
 	}
 
-	// ── Graceful shutdown ───────────────────────────────────
+	// ── Apagado elegante ───────────────────────────────────
 	go func() {
 		log.Info("🚀 API Gateway starting", "port", cfg.Port)
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {

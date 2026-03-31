@@ -1,3 +1,6 @@
+// ═══════════════════════════════════════════════════════════════
+// Puertos de Dominio – Límites hexagonales del servicio de inventario
+// ═══════════════════════════════════════════════════════════════
 package port
 
 import (
@@ -7,6 +10,9 @@ import (
 	"github.com/google/uuid"
 )
 
+// ── Puertos Primarios ─────────────────────────────────────────────────────
+
+// InventoryService define los casos de uso del contexto acotado de inventario.
 type InventoryService interface {
 	GetStock(ctx context.Context, productID uuid.UUID) (*model.Stock, error)
 	ListStock(ctx context.Context, page, limit int) ([]model.Stock, int, error)

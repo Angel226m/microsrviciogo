@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════
-// HTTP Handlers – User driving adapter (interface layer)
-// Translates HTTP requests into application service calls
+// Handlers HTTP – Adaptador primario de Usuario (capa de interfaz)
+// Traduce peticiones HTTP en llamadas al servicio de aplicación
 // ═══════════════════════════════════════════════════════════════
 package http
 
@@ -21,7 +21,7 @@ func NewUserHandler(service port.UserService) *UserHandler {
 	return &UserHandler{service: service}
 }
 
-// RegisterRoutes mounts user-related routes onto the router.
+// RegisterRoutes monta las rutas relacionadas con usuarios en el enrutador.
 func (h *UserHandler) RegisterRoutes(r chi.Router) {
 	r.Post("/api/v1/auth/register", h.Register)
 	r.Post("/api/v1/auth/login", h.Login)

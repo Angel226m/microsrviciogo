@@ -1,3 +1,9 @@
+/**
+ * ═══════════════════════════════════════════════════════════════
+ * Página de Registro – Creación de cuentas nuevas
+ * Incluye validación de fortaleza de contraseña e incentivos
+ * ═══════════════════════════════════════════════════════════════
+ */
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authService } from '../services/authService';
@@ -19,10 +25,10 @@ export default function RegisterPage() {
     try {
       const { user, tokens } = await authService.register(form);
       setAuth(user, tokens.access_token);
-      toast.success('Account created!');
+      toast.success('¡Cuenta creada exitosamente!');
       navigate('/');
     } catch {
-      toast.error('Registration failed');
+      toast.error('El registro falló');
     } finally {
       setLoading(false);
     }
@@ -32,7 +38,7 @@ export default function RegisterPage() {
     setForm({ ...form, [field]: e.target.value });
 
   const passwordStrength = form.password.length === 0 ? 0 : form.password.length < 6 ? 1 : form.password.length < 10 ? 2 : 3;
-  const strengthLabels = ['', 'Weak', 'Good', 'Strong'];
+  const strengthLabels = ['', 'Débil', 'Buena', 'Fuerte'];
   const strengthColors = ['', 'bg-red-500', 'bg-amber-500', 'bg-green-500'];
 
   return (
@@ -53,20 +59,20 @@ export default function RegisterPage() {
 
           <div className="max-w-md">
             <h2 className="text-4xl xl:text-5xl font-bold text-white leading-tight tracking-tight">
-              Start your
+              Comienza tu
               <span className="block bg-gradient-to-r from-primary-400 to-accent-400 bg-clip-text text-transparent">
-                shopping journey
+                experiencia de compras
               </span>
             </h2>
             <p className="mt-5 text-gray-400 text-lg leading-relaxed">
-              Create your free account and unlock exclusive benefits, track orders, and enjoy personalized shopping.
+              Crea tu cuenta gratuita y desbloquea beneficios exclusivos, rastrea pedidos y disfruta de compras personalizadas.
             </p>
 
             <div className="mt-10 grid grid-cols-1 gap-4">
               {[
-                { icon: Gift, title: '10% Welcome Discount', desc: 'Automatic discount on your first order' },
-                { icon: Heart, title: 'Wishlists & Favorites', desc: 'Save products and get restock alerts' },
-                { icon: Star, title: 'Rewards Program', desc: 'Earn points on every purchase' },
+                { icon: Gift, title: '10% de Descuento de Bienvenida', desc: 'Descuento automático en tu primer pedido' },
+                { icon: Heart, title: 'Listas de Deseos y Favoritos', desc: 'Guarda productos y recibe alertas de reposición' },
+                { icon: Star, title: 'Programa de Recompensas', desc: 'Gana puntos en cada compra' },
               ].map(({ icon: Icon, title, desc }) => (
                 <div key={title} className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/5">
                   <div className="w-10 h-10 rounded-lg bg-primary-500/15 flex items-center justify-center shrink-0">
@@ -82,7 +88,7 @@ export default function RegisterPage() {
           </div>
 
           <p className="text-gray-500 text-sm">
-            &copy; {new Date().getFullYear()} CloudMart. All rights reserved.
+            &copy; {new Date().getFullYear()} CloudMart. Todos los derechos reservados.
           </p>
         </div>
       </div>
@@ -101,48 +107,48 @@ export default function RegisterPage() {
 
           <div>
             <div className="mb-8">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Create Account</h2>
-              <p className="text-gray-500 mt-2">Fill in your details to get started</p>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Crear Cuenta</h2>
+              <p className="text-gray-500 mt-2">Completa tus datos para comenzar</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-2 gap-3">
                 <Input
-                  label="First Name"
+                  label="Nombre"
                   type="text"
                   value={form.first_name}
                   onChange={update('first_name')}
                   required
-                  placeholder="John"
+                  placeholder="Juan"
                   icon={<User className="w-5 h-5" />}
                 />
                 <Input
-                  label="Last Name"
+                  label="Apellido"
                   type="text"
                   value={form.last_name}
                   onChange={update('last_name')}
                   required
-                  placeholder="Doe"
+                  placeholder="Pérez"
                   icon={<User className="w-5 h-5" />}
                 />
               </div>
               <Input
-                label="Email address"
+                label="Correo electrónico"
                 type="email"
                 value={form.email}
                 onChange={update('email')}
                 required
-                placeholder="you@example.com"
+                placeholder="tu@ejemplo.com"
                 icon={<Mail className="w-5 h-5" />}
               />
               <div>
                 <Input
-                  label="Password"
+                  label="Contraseña"
                   type="password"
                   value={form.password}
                   onChange={update('password')}
                   required
-                  placeholder="Minimum 8 characters"
+                  placeholder="Mínimo 8 caracteres"
                   icon={<Lock className="w-5 h-5" />}
                 />
                 {form.password.length > 0 && (
@@ -174,22 +180,22 @@ export default function RegisterPage() {
                   size="lg"
                   icon={<ArrowRight className="w-5 h-5" />}
                 >
-                  Create Account
+                  Crear Cuenta
                 </Button>
               </div>
             </form>
 
             <p className="mt-6 text-center text-xs text-gray-400">
-              By creating an account, you agree to our{' '}
-              <span className="text-primary-600 font-medium cursor-pointer">Terms of Service</span> and{' '}
-              <span className="text-primary-600 font-medium cursor-pointer">Privacy Policy</span>.
+              Al crear una cuenta, aceptas nuestros{' '}
+              <span className="text-primary-600 font-medium cursor-pointer">Términos de Servicio</span> y{' '}
+              <span className="text-primary-600 font-medium cursor-pointer">Política de Privacidad</span>.
             </p>
 
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-500">
-                Already have an account?{' '}
+                ¿Ya tienes una cuenta?{' '}
                 <Link to="/login" className="text-primary-600 font-semibold hover:text-primary-700 transition-colors">
-                  Sign in
+                  Inicia sesión
                 </Link>
               </p>
             </div>

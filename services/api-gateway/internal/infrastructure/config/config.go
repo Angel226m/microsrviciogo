@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════
-// Configuration – Environment-driven config for API Gateway
+// Configuración – Configuración basada en variables de entorno para API Gateway
 // ═══════════════════════════════════════════════════════════════
 package config
 

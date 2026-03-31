@@ -1,3 +1,8 @@
+/**
+ * ═══════════════════════════════════════════════════════════════
+ * Página del Carrito – Gestión de artículos y resumen del pedido
+ * ═══════════════════════════════════════════════════════════════
+ */
 import { Link } from 'react-router-dom';
 import { useCartStore } from '../store/cartStore';
 import { Trash2, Minus, Plus, ShoppingBag, ArrowRight, Shield, Truck, Tag, ChevronLeft } from 'lucide-react';
@@ -13,9 +18,9 @@ export default function CartPage() {
       <div className="min-h-[60vh] flex items-center justify-center px-4">
         <EmptyState
           icon={ShoppingBag}
-          title="Your cart is empty"
-          description="Looks like you haven't added anything to your cart yet. Start exploring our amazing products!"
-          actionLabel="Browse Products"
+          title="Tu carrito está vacío"
+          description="Parece que aún no has agregado nada a tu carrito. ¡Empieza a explorar nuestros increíbles productos!"
+          actionLabel="Explorar Productos"
           actionTo="/products"
         />
       </div>
@@ -34,15 +39,15 @@ export default function CartPage() {
         {/* Header */}
         <div className="flex items-center justify-between mb-8 animate-fade-in-up">
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Shopping Cart</h1>
-            <p className="text-gray-500 mt-1">{count} {count === 1 ? 'item' : 'items'} in your cart</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Carrito de Compras</h1>
+            <p className="text-gray-500 mt-1">{count} {count === 1 ? 'artículo' : 'artículos'} en tu carrito</p>
           </div>
           <Link
             to="/products"
             className="flex items-center gap-2 text-sm text-primary-600 font-semibold hover:text-primary-700 transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />
-            Continue Shopping
+            Seguir Comprando
           </Link>
         </div>
 
@@ -136,7 +141,7 @@ export default function CartPage() {
               className="flex items-center gap-2 text-sm text-red-500 hover:text-red-600 font-medium px-2 py-1 hover:bg-red-50 rounded-lg transition-all"
             >
               <Trash2 className="w-3.5 h-3.5" />
-              Clear Cart
+              Vaciar Carrito
             </button>
           </div>
 
@@ -144,30 +149,30 @@ export default function CartPage() {
           <div className="animate-fade-in-up" style={{ animationDelay: '100ms' }}>
             <div className="bg-white rounded-2xl border border-gray-100 shadow-sm sticky top-24 overflow-hidden">
               <div className="p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-5">Order Summary</h3>
+                <h3 className="text-lg font-bold text-gray-900 mb-5">Resumen del Pedido</h3>
 
                 <div className="space-y-3.5">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">Subtotal ({count} items)</span>
+                    <span className="text-gray-500">Subtotal ({count} artículos)</span>
                     <span className="font-medium text-gray-900">${subtotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">Shipping</span>
+                    <span className="text-gray-500">Envío</span>
                     {shipping === 0 ? (
-                      <span className="font-medium text-green-600">Free</span>
+                      <span className="font-medium text-green-600">Gratis</span>
                     ) : (
                       <span className="font-medium text-gray-900">${shipping.toFixed(2)}</span>
                     )}
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">Tax (16% IVA)</span>
+                    <span className="text-gray-500">Impuesto (16% IVA)</span>
                     <span className="font-medium text-gray-900">${tax.toFixed(2)}</span>
                   </div>
 
                   {subtotal < 50 && (
                     <div className="bg-amber-50 text-amber-700 text-xs p-3 rounded-xl">
                       <Truck className="w-4 h-4 inline mr-1.5" />
-                      Add <span className="font-bold">${(50 - subtotal).toFixed(2)}</span> more for free shipping!
+                      Agrega <span className="font-bold">${(50 - subtotal).toFixed(2)}</span> más para envío gratis!
                     </div>
                   )}
 
@@ -185,7 +190,7 @@ export default function CartPage() {
               <div className="px-6 pb-6">
                 <Link to="/login">
                   <Button className="w-full" size="lg" icon={<ArrowRight className="w-5 h-5" />}>
-                    Proceed to Checkout
+                    Proceder al Pago
                   </Button>
                 </Link>
               </div>
@@ -194,15 +199,15 @@ export default function CartPage() {
               <div className="bg-gray-50 px-6 py-4 flex items-center justify-center gap-6 text-xs text-gray-500">
                 <span className="flex items-center gap-1.5">
                   <Shield className="w-3.5 h-3.5 text-green-500" />
-                  Secure
+                  Seguro
                 </span>
                 <span className="flex items-center gap-1.5">
                   <Truck className="w-3.5 h-3.5 text-primary-500" />
-                  Fast Delivery
+                  Envío Rápido
                 </span>
                 <span className="flex items-center gap-1.5">
                   <Tag className="w-3.5 h-3.5 text-amber-500" />
-                  Best Price
+                  Mejor Precio
                 </span>
               </div>
             </div>

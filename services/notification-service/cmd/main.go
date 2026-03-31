@@ -1,3 +1,8 @@
+// ═══════════════════════════════════════════════════════════════
+// Servicio de Notificaciones – Punto de Entrada
+// Envía emails transaccionales y escucha eventos de dominio vía NATS
+// (registro de usuarios, pedidos creados, pagos completados)
+// ═══════════════════════════════════════════════════════════════
 package main
 
 import (

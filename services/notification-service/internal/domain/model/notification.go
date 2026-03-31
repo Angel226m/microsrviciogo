@@ -1,3 +1,7 @@
+// ═══════════════════════════════════════════════════════════════
+// Modelo de Dominio – Entidades de Notificación
+// Tipos de notificación (email, SMS, push) y estados de envío
+// ═══════════════════════════════════════════════════════════════
 package model
 
 import (
@@ -6,6 +10,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// NotificationType representa el canal de envío de la notificación.
 type NotificationType string
 
 const (

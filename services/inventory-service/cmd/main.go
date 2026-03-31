@@ -1,3 +1,8 @@
+// ═══════════════════════════════════════════════════════════════
+// Servicio de Inventario – Punto de Entrada
+// Gestiona stock, reservas, reabastecimiento y movimientos de inventario
+// Escucha eventos de pedidos vía NATS para reservar/liberar stock
+// ═══════════════════════════════════════════════════════════════
 package main
 
 import (

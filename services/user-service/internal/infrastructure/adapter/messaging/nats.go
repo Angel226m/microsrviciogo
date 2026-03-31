@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════════════
-// NATS Messaging Adapter – Driven adapter for async event publishing
+// Adaptador de Mensajería NATS – Publicación asíncrona de eventos de dominio
+// Implementa port.EventPublisher usando NATS como bus de mensajes
 // ═══════════════════════════════════════════════════════════════
 package messaging
 
@@ -15,7 +16,7 @@ type natsPublisher struct {
 	conn *nats.Conn
 }
 
-// NewNATSPublisher creates a new NATS event publisher implementing port.EventPublisher.
+// NewNATSPublisher crea un nuevo publicador de eventos NATS implementando port.EventPublisher.
 func NewNATSPublisher(conn *nats.Conn) port.EventPublisher {
 	return &natsPublisher{conn: conn}
 }

@@ -1,3 +1,7 @@
+// ═══════════════════════════════════════════════════════════════
+// Servicio de Pedidos – Punto de Entrada
+// Gestiona el ciclo de vida completo de los pedidos del marketplace
+// ═══════════════════════════════════════════════════════════════
 package main
 
 import (

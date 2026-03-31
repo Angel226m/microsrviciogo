@@ -1,3 +1,7 @@
+// ═══════════════════════════════════════════════════════════════
+// Repositorio PostgreSQL – Adaptador secundario de Notificaciones
+// Implementa port.NotificationRepository usando PostgreSQL (pgx/v5)
+// ═══════════════════════════════════════════════════════════════
 package repository
 
 import (

@@ -1,3 +1,9 @@
+/**
+ * Configuración del cliente HTTP (Axios)
+ * - Interceptor de solicitud: inyecta token JWT automáticamente
+ * - Interceptor de respuesta: redirige a login en caso de 401 (no autorizado)
+ * - URL base: /api/v1 (proxy al API Gateway)
+ */
 import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
 

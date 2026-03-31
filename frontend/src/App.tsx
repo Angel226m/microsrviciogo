@@ -1,3 +1,10 @@
+/**
+ * ═══════════════════════════════════════════════════════════════
+ * CloudMart – Componente raíz de la aplicación
+ * Define el enrutamiento principal de la SPA con React Router
+ * Arquitectura limpia: separación de páginas públicas y protegidas
+ * ═══════════════════════════════════════════════════════════════
+ */
 import { Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
@@ -12,6 +19,7 @@ import ProfilePage from './pages/ProfilePage';
 export default function App() {
   return (
     <Routes>
+      {/* Rutas con layout principal (navbar + footer) */}
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
         <Route path="products" element={<ProductsPage />} />
@@ -20,6 +28,7 @@ export default function App() {
         <Route path="orders" element={<OrdersPage />} />
         <Route path="profile" element={<ProfilePage />} />
       </Route>
+      {/* Rutas de autenticación (sin layout) */}
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
     </Routes>

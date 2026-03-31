@@ -1,3 +1,7 @@
+// ═══════════════════════════════════════════════════════════════
+// Capa de Aplicación – Servicio de Notificaciones (casos de uso)
+// Orquesta el envío de notificaciones por email/SMS/push
+// ═══════════════════════════════════════════════════════════════
 package service
 
 import (
@@ -10,8 +14,8 @@ import (
 )
 
 type notificationService struct {
-	repo   port.NotificationRepository
-	email  port.EmailSender
+	repo  port.NotificationRepository
+	email port.EmailSender
 }
 
 func NewNotificationService(repo port.NotificationRepository, email port.EmailSender) port.NotificationService {

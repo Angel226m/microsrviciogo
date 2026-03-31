@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════════════
-// PostgreSQL Repository – User driven adapter (infrastructure)
+// Repositorio PostgreSQL – Adaptador secundario de Usuario (infraestructura)
+// Implementa port.UserRepository usando PostgreSQL (pgx/v5)
 // ═══════════════════════════════════════════════════════════════
 package repository
 
@@ -18,7 +19,7 @@ type userPostgresRepo struct {
 	pool *pgxpool.Pool
 }
 
-// NewUserPostgresRepo creates a new PostgreSQL user repository adapter.
+// NewUserPostgresRepo crea un nuevo adaptador de repositorio PostgreSQL para usuarios.
 func NewUserPostgresRepo(pool *pgxpool.Pool) port.UserRepository {
 	return &userPostgresRepo{pool: pool}
 }
@@ -95,7 +96,7 @@ func (r *userPostgresRepo) UpdateLastLogin(ctx context.Context, id uuid.UUID) er
 	return err
 }
 
-// ── Address Repository ────────────────────────────────────────────────
+// ── Repositorio de Direcciones ────────────────────────────────────────────────────
 
 type addressPostgresRepo struct {
 	pool *pgxpool.Pool

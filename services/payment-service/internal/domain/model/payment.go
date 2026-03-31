@@ -1,3 +1,7 @@
+// ═══════════════════════════════════════════════════════════════
+// Modelo de Dominio – Entidades de Pago
+// Transacciones, estados y métodos de pago soportados
+// ═══════════════════════════════════════════════════════════════
 package model
 
 import (
@@ -6,7 +10,10 @@ import (
 	"github.com/google/uuid"
 )
 
+// PaymentStatus representa el estado de una transacción de pago.
 type PaymentStatus string
+
+// PaymentMethod representa un método de pago soportado.
 type PaymentMethod string
 
 const (

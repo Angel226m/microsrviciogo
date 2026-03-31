@@ -1,3 +1,7 @@
+// ═══════════════════════════════════════════════════════════════
+// Capa de Aplicación – Servicio de Inventario (casos de uso)
+// Gestiona reservas, liberaciones, reabastecimiento y alertas de stock bajo
+// ═══════════════════════════════════════════════════════════════
 package service
 
 import (
@@ -35,8 +39,12 @@ func (s *inventoryService) GetStock(ctx context.Context, productID uuid.UUID) (*
 }
 
 func (s *inventoryService) ListStock(ctx context.Context, page, limit int) ([]model.Stock, int, error) {
-	if page < 1 { page = 1 }
-	if limit < 1 || limit > 100 { limit = 20 }
+	if page < 1 {
+		page = 1
+	}
+	if limit < 1 || limit > 100 {
+		limit = 20
+	}
 	return s.stockRepo.List(ctx, page, limit)
 }
 

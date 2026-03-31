@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════
-// Telemetry – OpenTelemetry + Jaeger distributed tracing
+// Telemetría – Trazado distribuido con OpenTelemetry y Jaeger
 // ═══════════════════════════════════════════════════════════════
 package telemetry
 
@@ -14,7 +14,7 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.24.0"
 )
 
-// InitTracer initializes an OTLP HTTP exporter to Jaeger and registers a global TracerProvider.
+// InitTracer inicializa un exportador OTLP HTTP a Jaeger y registra un TracerProvider global.
 func InitTracer(serviceName, endpoint string) (*sdktrace.TracerProvider, error) {
 	ctx := context.Background()
 

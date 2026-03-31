@@ -1,3 +1,7 @@
+// ═══════════════════════════════════════════════════════════════
+// Handlers HTTP – Adaptador primario de Pedidos
+// Traduce peticiones HTTP en llamadas al servicio de aplicación
+// ═══════════════════════════════════════════════════════════════
 package http
 
 import (

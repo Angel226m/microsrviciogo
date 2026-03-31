@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════
-// Domain Ports – Interfaces that define the hexagonal boundaries
-// Driving ports (inbound) & Driven ports (outbound)
+// Puertos de Dominio – Interfaces que definen los límites hexagonales
+// Puertos primarios (entrada) y puertos secundarios (salida)
 // ═══════════════════════════════════════════════════════════════
 package port
 
@@ -11,9 +11,9 @@ import (
 	"github.com/google/uuid"
 )
 
-// ── Driving Ports (Primary – called by adapters like HTTP handlers) ──
+// ── Puertos Primarios (llamados por adaptadores como handlers HTTP) ──
 
-// UserService defines the use cases for user management.
+// UserService define los casos de uso para gestión de usuarios.
 type UserService interface {
 	Register(ctx context.Context, req RegisterRequest) (*model.User, error)
 	Login(ctx context.Context, email, password string) (*model.AuthTokens, error)
@@ -23,9 +23,9 @@ type UserService interface {
 	AddAddress(ctx context.Context, userID uuid.UUID, req AddAddressRequest) (*model.Address, error)
 }
 
-// ── Driven Ports (Secondary – implemented by infrastructure adapters) ──
+// ── Puertos Secundarios (implementados por adaptadores de infraestructura) ──
 
-// UserRepository defines the persistence contract for users.
+// UserRepository define el contrato de persistencia para usuarios.
 type UserRepository interface {
 	Create(ctx context.Context, user *model.User) error
 	FindByID(ctx context.Context, id uuid.UUID) (*model.User, error)
@@ -34,26 +34,26 @@ type UserRepository interface {
 	UpdateLastLogin(ctx context.Context, id uuid.UUID) error
 }
 
-// AddressRepository defines the persistence contract for addresses.
+// AddressRepository define el contrato de persistencia para direcciones.
 type AddressRepository interface {
 	Create(ctx context.Context, addr *model.Address) error
 	FindByUserID(ctx context.Context, userID uuid.UUID) ([]model.Address, error)
 	Delete(ctx context.Context, id uuid.UUID) error
 }
 
-// CacheRepository defines the caching contract.
+// CacheRepository define el contrato de almacenamiento en caché.
 type CacheRepository interface {
 	Get(ctx context.Context, key string) (string, error)
 	Set(ctx context.Context, key string, value interface{}, ttlSeconds int) error
 	Delete(ctx context.Context, key string) error
 }
 
-// EventPublisher defines the contract for publishing domain events.
+// EventPublisher define el contrato para publicar eventos de dominio.
 type EventPublisher interface {
 	Publish(ctx context.Context, subject string, data interface{}) error
 }
 
-// ── Request DTOs ──────────────────────────────────────────────────────
+// ── DTOs de Solicitud ────────────────────────────────────────────────────────
 
 type RegisterRequest struct {
 	Email     string `json:"email"`

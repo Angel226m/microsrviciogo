@@ -1,6 +1,7 @@
 // ═══════════════════════════════════════════════════════════════
-// HTTP Router – API Gateway routing with Chi
-// Reverse proxy + middleware chain (auth, rate limit, circuit breaker)
+// Enrutador HTTP – API Gateway con Chi
+// Proxy inverso + cadena de middlewares (auth, rate limit, seguridad OWASP)
+// Cumple con controles de seguridad ISO 27001 Anexo A.14
 // ═══════════════════════════════════════════════════════════════
 package http
 
@@ -16,18 +17,21 @@ import (
 	"github.com/go-chi/httprate"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	"github.com/cloudmart/api-gateway/internal/infrastructure/config"
 	"github.com/cloudmart/api-gateway/internal/infrastructure/adapter/http/middleware"
+	"github.com/cloudmart/api-gateway/internal/infrastructure/config"
 	"github.com/cloudmart/api-gateway/pkg/logger"
 )
 
-// NewRouter creates the main API Gateway router with all middleware and proxy routes.
+// NuevoEnrutador crea el enrutador principal del API Gateway con todos los middlewares y rutas proxy.
 func NewRouter(cfg *config.Config, log *logger.Logger) http.Handler {
 	r := chi.NewRouter()
 
-	// ── Global Middleware ────────────────────────────────────
+	// ── Middlewares globales ─────────────────────────────────
 	r.Use(chimw.RequestID)
 	r.Use(chimw.RealIP)
+	r.Use(middleware.CabecerasSeguridad())       // Cabeceras OWASP
+	r.Use(middleware.ValidarContentType())       // Validación Content-Type
+	r.Use(middleware.LimitarTamanoBody(1048576)) // Límite 1MB por petición
 	r.Use(middleware.RequestLogger(log))
 	r.Use(middleware.MetricsMiddleware())
 	r.Use(chimw.Recoverer)
@@ -41,95 +45,98 @@ func NewRouter(cfg *config.Config, log *logger.Logger) http.Handler {
 		MaxAge:           300,
 	}))
 
-	// ── Rate Limiting ───────────────────────────────────────
+	// ── Limitación de tasa (OWASP – protección contra fuerza bruta) ──
 	r.Use(httprate.LimitByIP(100, 1*time.Minute))
 
-	// ── Health & Metrics ────────────────────────────────────
-	r.Get("/health", healthCheck)
-	r.Get("/ready", readinessCheck)
+	// ── Salud y métricas ────────────────────────────────────
+	r.Get("/health", verificarSalud)
+	r.Get("/ready", verificarDisponibilidad)
 	r.Handle("/metrics", promhttp.Handler())
 
-	// ── API v1 Routes ───────────────────────────────────────
+	// ── Rutas API v1 ────────────────────────────────────────
 	r.Route("/api/v1", func(r chi.Router) {
-		// Public routes (no auth required)
+		// Rutas públicas (sin autenticación requerida)
 		r.Group(func(r chi.Router) {
-			r.Post("/auth/login", proxyTo(cfg.UserServiceURL, "/api/v1/auth/login"))
-			r.Post("/auth/register", proxyTo(cfg.UserServiceURL, "/api/v1/auth/register"))
-			r.Get("/products", proxyTo(cfg.ProductServiceURL, "/api/v1/products"))
-			r.Get("/products/{slug}", proxyTo(cfg.ProductServiceURL, "/api/v1/products/{slug}"))
-			r.Get("/categories", proxyTo(cfg.ProductServiceURL, "/api/v1/categories"))
-			r.Get("/products/{id}/reviews", proxyTo(cfg.ProductServiceURL, "/api/v1/products/{id}/reviews"))
+			r.Post("/auth/login", proxyHacia(cfg.UserServiceURL, "/api/v1/auth/login"))
+			r.Post("/auth/register", proxyHacia(cfg.UserServiceURL, "/api/v1/auth/register"))
+			r.Get("/products", proxyHacia(cfg.ProductServiceURL, "/api/v1/products"))
+			r.Get("/products/{slug}", proxyHacia(cfg.ProductServiceURL, "/api/v1/products/{slug}"))
+			r.Get("/categories", proxyHacia(cfg.ProductServiceURL, "/api/v1/categories"))
+			r.Get("/products/{id}/reviews", proxyHacia(cfg.ProductServiceURL, "/api/v1/products/{id}/reviews"))
 		})
 
-		// Protected routes (auth required)
+		// Rutas protegidas (autenticación JWT requerida)
 		r.Group(func(r chi.Router) {
 			r.Use(middleware.JWTAuth(cfg.JWTSecret))
 
-			// User
-			r.Get("/users/me", proxyTo(cfg.UserServiceURL, "/api/v1/users/me"))
-			r.Put("/users/me", proxyTo(cfg.UserServiceURL, "/api/v1/users/me"))
-			r.Get("/users/me/addresses", proxyTo(cfg.UserServiceURL, "/api/v1/users/me/addresses"))
-			r.Post("/users/me/addresses", proxyTo(cfg.UserServiceURL, "/api/v1/users/me/addresses"))
+			// Usuarios
+			r.Get("/users/me", proxyHacia(cfg.UserServiceURL, "/api/v1/users/me"))
+			r.Put("/users/me", proxyHacia(cfg.UserServiceURL, "/api/v1/users/me"))
+			r.Get("/users/me/addresses", proxyHacia(cfg.UserServiceURL, "/api/v1/users/me/addresses"))
+			r.Post("/users/me/addresses", proxyHacia(cfg.UserServiceURL, "/api/v1/users/me/addresses"))
 
-			// Products (write)
-			r.Post("/products", proxyTo(cfg.ProductServiceURL, "/api/v1/products"))
-			r.Put("/products/{id}", proxyTo(cfg.ProductServiceURL, "/api/v1/products/{id}"))
-			r.Delete("/products/{id}", proxyTo(cfg.ProductServiceURL, "/api/v1/products/{id}"))
-			r.Post("/products/{id}/reviews", proxyTo(cfg.ProductServiceURL, "/api/v1/products/{id}/reviews"))
+			// Productos (escritura)
+			r.Post("/products", proxyHacia(cfg.ProductServiceURL, "/api/v1/products"))
+			r.Put("/products/{id}", proxyHacia(cfg.ProductServiceURL, "/api/v1/products/{id}"))
+			r.Delete("/products/{id}", proxyHacia(cfg.ProductServiceURL, "/api/v1/products/{id}"))
+			r.Post("/products/{id}/reviews", proxyHacia(cfg.ProductServiceURL, "/api/v1/products/{id}/reviews"))
 
-			// Orders
-			r.Post("/orders", proxyTo(cfg.OrderServiceURL, "/api/v1/orders"))
-			r.Get("/orders", proxyTo(cfg.OrderServiceURL, "/api/v1/orders"))
-			r.Get("/orders/{id}", proxyTo(cfg.OrderServiceURL, "/api/v1/orders/{id}"))
-			r.Put("/orders/{id}/cancel", proxyTo(cfg.OrderServiceURL, "/api/v1/orders/{id}/cancel"))
+			// Pedidos
+			r.Post("/orders", proxyHacia(cfg.OrderServiceURL, "/api/v1/orders"))
+			r.Get("/orders", proxyHacia(cfg.OrderServiceURL, "/api/v1/orders"))
+			r.Get("/orders/{id}", proxyHacia(cfg.OrderServiceURL, "/api/v1/orders/{id}"))
+			r.Put("/orders/{id}/cancel", proxyHacia(cfg.OrderServiceURL, "/api/v1/orders/{id}/cancel"))
 
-			// Payments
-			r.Post("/payments", proxyTo(cfg.PaymentServiceURL, "/api/v1/payments"))
-			r.Get("/payments/{id}", proxyTo(cfg.PaymentServiceURL, "/api/v1/payments/{id}"))
+			// Pagos
+			r.Post("/payments", proxyHacia(cfg.PaymentServiceURL, "/api/v1/payments"))
+			r.Get("/payments/{id}", proxyHacia(cfg.PaymentServiceURL, "/api/v1/payments/{id}"))
 
-			// Inventory (admin)
-			r.Get("/inventory", proxyTo(cfg.InventoryServiceURL, "/api/v1/inventory"))
-			r.Get("/inventory/{productId}", proxyTo(cfg.InventoryServiceURL, "/api/v1/inventory/{productId}"))
-			r.Put("/inventory/{productId}", proxyTo(cfg.InventoryServiceURL, "/api/v1/inventory/{productId}"))
+			// Inventario (administración)
+			r.Get("/inventory", proxyHacia(cfg.InventoryServiceURL, "/api/v1/inventory"))
+			r.Get("/inventory/{productId}", proxyHacia(cfg.InventoryServiceURL, "/api/v1/inventory/{productId}"))
+			r.Put("/inventory/{productId}", proxyHacia(cfg.InventoryServiceURL, "/api/v1/inventory/{productId}"))
 		})
 	})
 
 	return r
 }
 
-// ── Reverse Proxy Helpers ──────────────────────────────────────────
+// ── Helpers de Proxy Inverso ───────────────────────────────────────
 
-func proxyTo(targetBase, path string) http.HandlerFunc {
+// proxyHacia crea un handler que redirige la petición al servicio destino.
+func proxyHacia(urlBase, ruta string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		target, err := url.Parse(targetBase)
+		destino, err := url.Parse(urlBase)
 		if err != nil {
 			http.Error(w, "Bad gateway", http.StatusBadGateway)
 			return
 		}
 
-		proxy := httputil.NewSingleHostReverseProxy(target)
+		proxy := httputil.NewSingleHostReverseProxy(destino)
 		proxy.ErrorHandler = func(w http.ResponseWriter, r *http.Request, err error) {
-			http.Error(w, `{"error":"service_unavailable","message":"upstream service is not responding"}`, http.StatusServiceUnavailable)
+			http.Error(w, `{"error":"servicio_no_disponible","mensaje":"el servicio upstream no responde"}`, http.StatusServiceUnavailable)
 		}
 
-		r.URL.Path = path
-		r.URL.Host = target.Host
-		r.URL.Scheme = target.Scheme
+		r.URL.Path = ruta
+		r.URL.Host = destino.Host
+		r.URL.Scheme = destino.Scheme
 		r.Header.Set("X-Forwarded-Host", r.Header.Get("Host"))
-		r.Host = target.Host
+		r.Host = destino.Host
 
 		proxy.ServeHTTP(w, r)
 	}
 }
 
-func healthCheck(w http.ResponseWriter, r *http.Request) {
+// verificarSalud devuelve el estado de salud del servicio.
+func verificarSalud(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(`{"status":"healthy","service":"api-gateway","version":"1.0.0"}`))
+	w.Write([]byte(`{"estado":"saludable","servicio":"api-gateway","version":"1.0.0"}`))
 }
 
-func readinessCheck(w http.ResponseWriter, r *http.Request) {
+// verificarDisponibilidad devuelve si el servicio está listo para recibir tráfico.
+func verificarDisponibilidad(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(`{"status":"ready"}`))
+	w.Write([]byte(`{"estado":"listo"}`))
 }

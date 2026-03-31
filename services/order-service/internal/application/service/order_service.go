@@ -1,3 +1,7 @@
+// ═══════════════════════════════════════════════════════════════
+// Capa de Aplicación – Servicio de Pedidos (casos de uso)
+// Orquesta la creación, consulta y cancelación de pedidos
+// ═══════════════════════════════════════════════════════════════
 package service
 
 import (
@@ -12,9 +16,9 @@ import (
 )
 
 var (
-	ErrOrderNotFound    = errors.New("order not found")
-	ErrCannotCancel     = errors.New("order cannot be cancelled in current status")
-	ErrUnauthorized     = errors.New("not authorized to access this order")
+	ErrOrderNotFound = errors.New("order not found")
+	ErrCannotCancel  = errors.New("order cannot be cancelled in current status")
+	ErrUnauthorized  = errors.New("not authorized to access this order")
 )
 
 type orderService struct {
@@ -83,8 +87,12 @@ func (s *orderService) GetByID(ctx context.Context, id uuid.UUID) (*model.Order,
 }
 
 func (s *orderService) ListByUser(ctx context.Context, userID uuid.UUID, page, limit int) ([]model.Order, int, error) {
-	if page < 1 { page = 1 }
-	if limit < 1 || limit > 50 { limit = 10 }
+	if page < 1 {
+		page = 1
+	}
+	if limit < 1 || limit > 50 {
+		limit = 10
+	}
 	return s.repo.FindByUserID(ctx, userID, page, limit)
 }
 

@@ -1,3 +1,7 @@
+// ═══════════════════════════════════════════════════════════════
+// Handlers HTTP – Adaptador primario de Notificaciones
+// Envío y consulta de notificaciones vía API REST
+// ═══════════════════════════════════════════════════════════════
 package http
 
 import (

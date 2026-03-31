@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════════════
-// Application Layer – Product Service (use cases)
+// Capa de Aplicación – Servicio de Producto (casos de uso)
+// Orquesta lógica de negocio, repositorios, caché y eventos
 // ═══════════════════════════════════════════════════════════════
 package service
 

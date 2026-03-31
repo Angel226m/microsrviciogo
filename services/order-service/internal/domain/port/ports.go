@@ -7,7 +7,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// ── Driving Ports ─────────────────────────────────────────────────────
+// ── Puertos Primarios ─────────────────────────────────────────────────────
 
 type OrderService interface {
 	Create(ctx context.Context, req CreateOrderRequest) (*model.Order, error)
@@ -16,7 +16,7 @@ type OrderService interface {
 	Cancel(ctx context.Context, id uuid.UUID, userID uuid.UUID) error
 }
 
-// ── Driven Ports ──────────────────────────────────────────────────────
+// ── Puertos Secundarios ──────────────────────────────────────────────────
 
 type OrderRepository interface {
 	Create(ctx context.Context, order *model.Order) error
@@ -30,7 +30,7 @@ type EventPublisher interface {
 	Publish(ctx context.Context, subject string, data interface{}) error
 }
 
-// ── Request DTOs ──────────────────────────────────────────────────────
+// ── DTOs de Solicitud ──────────────────────────────────────────────────
 
 type CreateOrderRequest struct {
 	UserID          uuid.UUID      `json:"user_id"`

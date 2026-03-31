@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════════════
-// Domain Model – Order entities
+// Modelo de Dominio – Entidades de Pedido
+// Raíz agregada del contexto acotado de pedidos
 // ═══════════════════════════════════════════════════════════════
 package model
 
@@ -23,7 +24,7 @@ const (
 	StatusRefunded   OrderStatus = "refunded"
 )
 
-// Order is the aggregate root for the order bounded context.
+// Order es la raíz agregada del contexto acotado de pedidos.
 type Order struct {
 	ID              uuid.UUID   `json:"id"`
 	OrderNumber     string      `json:"order_number"`
@@ -43,7 +44,7 @@ type Order struct {
 	UpdatedAt       time.Time   `json:"updated_at"`
 }
 
-// OrderItem represents a line item in an order.
+// OrderItem representa un artículo individual dentro de un pedido.
 type OrderItem struct {
 	ID          uuid.UUID `json:"id"`
 	OrderID     uuid.UUID `json:"order_id"`
@@ -64,12 +65,12 @@ type Address struct {
 	Country string `json:"country"`
 }
 
-// CanCancel checks business rule: only pending/confirmed orders can be cancelled.
+// CanCancel verifica regla de negocio: solo pedidos pendientes/confirmados pueden cancelarse.
 func (o *Order) CanCancel() bool {
 	return o.Status == StatusPending || o.Status == StatusConfirmed
 }
 
-// CalculateTotal computes the order total from items, tax, shipping, and discounts.
+// CalculateTotal calcula el total del pedido: artículos + impuesto + envío - descuentos.
 func (o *Order) CalculateTotal() {
 	o.Subtotal = 0
 	for _, item := range o.Items {
@@ -79,7 +80,7 @@ func (o *Order) CalculateTotal() {
 	o.Total = o.Subtotal + o.Tax + o.ShippingCost - o.Discount
 }
 
-// GenerateOrderNumber creates a unique order number.
+// GenerateOrderNumber crea un número de pedido único.
 func GenerateOrderNumber() string {
 	return fmt.Sprintf("CM-%d%04d", time.Now().Unix()%100000, rand.Intn(10000))
 }

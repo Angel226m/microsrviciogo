@@ -1,3 +1,8 @@
+/**
+ * ═══════════════════════════════════════════════════════════════
+ * Página de Pedidos – Historial y seguimiento de pedidos
+ * ═══════════════════════════════════════════════════════════════
+ */
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { orderService } from '../services/orderService';
 import { useAuthStore, type AuthState } from '../store/authStore';
@@ -32,10 +37,10 @@ export default function OrdersPage() {
   const handleCancel = async (orderId: string) => {
     try {
       await orderService.cancel(orderId);
-      toast.success('Order cancelled');
+      toast.success('Pedido cancelado');
       queryClient.invalidateQueries({ queryKey: ['orders'] });
     } catch {
-      toast.error('Failed to cancel order');
+      toast.error('Error al cancelar el pedido');
     }
   };
 
@@ -48,9 +53,9 @@ export default function OrdersPage() {
             <Package className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">My Orders</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Mis Pedidos</h1>
             {data?.data && (
-              <p className="text-sm text-gray-500 mt-0.5">{data.data.length} order{data.data.length !== 1 ? 's' : ''}</p>
+              <p className="text-sm text-gray-500 mt-0.5">{data.data.length} pedido{data.data.length !== 1 ? 's' : ''}</p>
             )}
           </div>
         </div>
@@ -63,9 +68,9 @@ export default function OrdersPage() {
           <div className="py-12">
             <EmptyState
               icon={ShoppingBag}
-              title="No orders yet"
-              description="When you place orders, they'll appear here so you can track them."
-              actionLabel="Start Shopping"
+              title="Aún no tienes pedidos"
+              description="Cuando realices pedidos, aparecerán aquí para que puedas rastrearlos."
+              actionLabel="Empezar a Comprar"
               actionTo="/products"
             />
           </div>
@@ -110,7 +115,7 @@ export default function OrdersPage() {
 
                       <div className="flex items-center gap-4 w-full sm:w-auto justify-between sm:justify-end">
                         <div className="text-right">
-                          <p className="text-xs text-gray-400">{order.items?.length ?? 0} items</p>
+                          <p className="text-xs text-gray-400">{order.items?.length ?? 0} artículos</p>
                           <p className="text-lg font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
                             ${order.total?.toFixed(2)}
                           </p>
@@ -121,13 +126,13 @@ export default function OrdersPage() {
 
                     {order.status === 'pending' && (
                       <div className="mt-4 pt-4 border-t border-gray-50 flex items-center justify-between">
-                        <span className="text-xs text-amber-600 font-medium">Awaiting confirmation</span>
+                        <span className="text-xs text-amber-600 font-medium">Esperando confirmación</span>
                         <button
                           onClick={() => handleCancel(order.id)}
                           className="flex items-center gap-1.5 text-sm text-red-500 hover:text-red-600 font-medium px-3 py-1.5 hover:bg-red-50 rounded-lg transition-all"
                         >
                           <XCircle className="w-4 h-4" />
-                          Cancel Order
+                          Cancelar Pedido
                         </button>
                       </div>
                     )}

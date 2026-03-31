@@ -1,3 +1,9 @@
+/**
+ * ═══════════════════════════════════════════════════════════════
+ * Página de Inicio de Sesión – Autenticación de usuarios
+ * Incluye panel lateral profesional y formulario de acceso
+ * ═══════════════════════════════════════════════════════════════
+ */
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authService } from '../services/authService';
@@ -24,10 +30,10 @@ export default function LoginPage() {
     try {
       const { user, tokens } = await authService.login(email, password);
       setAuth(user, tokens.access_token);
-      toast.success('Welcome back!');
+      toast.success('¡Bienvenido de vuelta!');
       navigate('/');
     } catch {
-      toast.error('Invalid credentials');
+      toast.error('Credenciales inválidas');
     } finally {
       setLoading(false);
     }
@@ -52,22 +58,22 @@ export default function LoginPage() {
           <div className="max-w-lg">
             <div className="inline-flex items-center gap-2 bg-primary-500/15 border border-primary-500/20 rounded-full px-4 py-1.5 text-sm font-medium text-primary-300 mb-6">
               <Sparkles className="w-3.5 h-3.5" />
-              Trusted by 100K+ customers worldwide
+              Más de 100K clientes confían en nosotros
             </div>
             <h2 className="text-4xl xl:text-5xl font-bold text-white leading-tight tracking-tight">
-              Welcome back to
+              Bienvenido de nuevo a
               <span className="block bg-gradient-to-r from-primary-400 to-accent-400 bg-clip-text text-transparent">
                 CloudMart
               </span>
             </h2>
             <p className="mt-5 text-gray-400 text-lg leading-relaxed">
-              Access your personalized dashboard, track orders in real-time, and discover curated deals just for you.
+              Accede a tu panel personalizado, rastrea pedidos en tiempo real y descubre ofertas exclusivas para ti.
             </p>
 
             <div className="mt-10 grid grid-cols-1 gap-4">
               {[
-                { icon: Shield, title: 'Secure & Private', desc: 'End-to-end encryption on all transactions' },
-                { icon: Zap, title: 'Lightning Checkout', desc: 'One-click purchasing with saved preferences' },
+                { icon: Shield, title: 'Seguro y Privado', desc: 'Cifrado de extremo a extremo en todas las transacciones' },
+                { icon: Zap, title: 'Pago Relámpago', desc: 'Compra en un clic con preferencias guardadas' },
               ].map(({ icon: Icon, title, desc }) => (
                 <div key={title} className="flex items-start gap-4 p-4 rounded-xl bg-white/5 border border-white/5">
                   <div className="w-10 h-10 rounded-lg bg-primary-500/15 flex items-center justify-center shrink-0">
@@ -83,9 +89,9 @@ export default function LoginPage() {
           </div>
 
           <div className="flex items-center gap-8 text-sm text-gray-500">
-            <span className="flex items-center gap-2"><Users className="w-4 h-4" /> 100K+ users</span>
-            <span className="flex items-center gap-2"><Globe className="w-4 h-4" /> 50+ countries</span>
-            <span className="flex items-center gap-2"><Shield className="w-4 h-4" /> SOC 2 certified</span>
+            <span className="flex items-center gap-2"><Users className="w-4 h-4" /> 100K+ usuarios</span>
+            <span className="flex items-center gap-2"><Globe className="w-4 h-4" /> 50+ países</span>
+            <span className="flex items-center gap-2"><Shield className="w-4 h-4" /> Certificado SOC 2</span>
           </div>
         </div>
       </div>
@@ -104,12 +110,12 @@ export default function LoginPage() {
 
           <div>
             <div className="mb-8">
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Sign in</h2>
-              <p className="text-gray-500 mt-2">Enter your credentials to access your account</p>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 tracking-tight">Iniciar Sesión</h2>
+              <p className="text-gray-500 mt-2">Ingresa tus credenciales para acceder a tu cuenta</p>
             </div>
 
             <div className="mb-6 p-4 bg-primary-50 border border-primary-100 rounded-xl">
-              <p className="text-xs font-semibold text-primary-700 uppercase tracking-wider mb-1">Demo credentials</p>
+              <p className="text-xs font-semibold text-primary-700 uppercase tracking-wider mb-1">Credenciales de demostración</p>
               <p className="text-sm text-primary-600">
                 <span className="font-mono bg-primary-100 px-1.5 py-0.5 rounded text-xs">demo@cloudmart.com</span> / <span className="font-mono bg-primary-100 px-1.5 py-0.5 rounded text-xs">demo123</span>
               </p>
@@ -117,22 +123,22 @@ export default function LoginPage() {
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <Input
-                label="Email address"
+                label="Correo electrónico"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                placeholder="you@example.com"
+                placeholder="tu@ejemplo.com"
                 icon={<Mail className="w-5 h-5" />}
               />
               <div className="relative">
                 <Input
-                  label="Password"
+                  label="Contraseña"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  placeholder="Enter your password"
+                  placeholder="Ingresa tu contraseña"
                   icon={<Lock className="w-5 h-5" />}
                 />
                 <button
@@ -147,10 +153,10 @@ export default function LoginPage() {
               <div className="flex items-center justify-between">
                 <label className="flex items-center gap-2 cursor-pointer select-none">
                   <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-primary-600 focus:ring-primary-500" />
-                  <span className="text-sm text-gray-600">Remember me</span>
+                  <span className="text-sm text-gray-600">Recordarme</span>
                 </label>
                 <button type="button" className="text-sm text-primary-600 font-medium hover:text-primary-700 transition-colors">
-                  Forgot password?
+                  ¿Olvidaste tu contraseña?
                 </button>
               </div>
 
@@ -162,7 +168,7 @@ export default function LoginPage() {
                 icon={<ArrowRight className="w-5 h-5" />}
               >
                 Sign In
-              </Button>
+              >Iniciar Sesión</Button>
             </form>
 
             <div className="mt-6 relative">
@@ -170,7 +176,7 @@ export default function LoginPage() {
                 <div className="w-full border-t border-gray-200" />
               </div>
               <div className="relative flex justify-center text-xs">
-                <span className="px-3 bg-gray-50 text-gray-400 uppercase tracking-wider font-medium">or</span>
+                <span className="px-3 bg-gray-50 text-gray-400 uppercase tracking-wider font-medium">o</span>
               </div>
             </div>
 
@@ -186,9 +192,9 @@ export default function LoginPage() {
             </div>
 
             <p className="mt-8 text-center text-sm text-gray-500">
-              Don't have an account?{' '}
+              ¿No tienes una cuenta?{' '}
               <Link to="/register" className="text-primary-600 font-semibold hover:text-primary-700 transition-colors">
-                Create one free
+                Crea una gratis
               </Link>
             </p>
           </div>

@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════
-// JWT Authentication Middleware
-// Validates Bearer tokens and injects user context
+// Middleware de Autenticación JWT
+// Valida tokens Bearer e inyecta contexto de usuario
 // ═══════════════════════════════════════════════════════════════
 package middleware
 
@@ -27,7 +27,7 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-// JWTAuth returns middleware that validates JWT tokens from the Authorization header.
+// JWTAuth devuelve un middleware que valida tokens JWT del encabezado Authorization.
 func JWTAuth(secret string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -58,12 +58,12 @@ func JWTAuth(secret string) func(http.Handler) http.Handler {
 				return
 			}
 
-			// Inject user info into request context
+			// Inyectar info de usuario en el contexto de la petición
 			ctx := context.WithValue(r.Context(), UserIDKey, claims.UserID)
 			ctx = context.WithValue(ctx, RoleKey, claims.Role)
 			ctx = context.WithValue(ctx, EmailKey, claims.Email)
 
-			// Forward user info as headers to downstream services
+			// Reenviar info de usuario como cabeceras a servicios downstream
 			r.Header.Set("X-User-ID", claims.UserID)
 			r.Header.Set("X-User-Role", claims.Role)
 			r.Header.Set("X-User-Email", claims.Email)

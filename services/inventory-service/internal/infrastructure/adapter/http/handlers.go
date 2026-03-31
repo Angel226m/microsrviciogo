@@ -1,3 +1,7 @@
+// ═══════════════════════════════════════════════════════════════
+// Handlers HTTP – Adaptador primario de Inventario
+// Gestiona stock, reservas, reabastecimiento y movimientos vía REST
+// ═══════════════════════════════════════════════════════════════
 package http
 
 import (

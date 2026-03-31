@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════════════
-// Domain Model – User entity (business core, zero dependencies)
+// Modelo de Dominio – Entidad Usuario (núcleo de negocio, cero dependencias)
+// Arquitectura Hexagonal: capa de dominio pura sin dependencias externas
 // ═══════════════════════════════════════════════════════════════
 package model
 
@@ -9,7 +10,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// Role represents user authorization levels
+// Role representa los niveles de autorización del usuario.
 type Role string
 
 const (
@@ -18,7 +19,7 @@ const (
 	RoleSeller   Role = "seller"
 )
 
-// User is the core domain entity representing a platform user.
+// User es la entidad principal de dominio que representa un usuario de la plataforma.
 type User struct {
 	ID            uuid.UUID  `json:"id"`
 	Email         string     `json:"email"`
@@ -35,17 +36,17 @@ type User struct {
 	UpdatedAt     time.Time  `json:"updated_at"`
 }
 
-// FullName returns the user's full name.
+// FullName devuelve el nombre completo del usuario.
 func (u *User) FullName() string {
 	return u.FirstName + " " + u.LastName
 }
 
-// IsAdmin checks if the user has admin privileges.
+// IsAdmin verifica si el usuario tiene privilegios de administrador.
 func (u *User) IsAdmin() bool {
 	return u.Role == RoleAdmin
 }
 
-// Address represents a shipping/billing address for a user.
+// Address representa una dirección de envío/facturación del usuario.
 type Address struct {
 	ID        uuid.UUID `json:"id"`
 	UserID    uuid.UUID `json:"user_id"`
@@ -59,7 +60,7 @@ type Address struct {
 	CreatedAt time.Time `json:"created_at"`
 }
 
-// AuthTokens holds the JWT access and refresh tokens.
+// AuthTokens contiene los tokens JWT de acceso y actualización.
 type AuthTokens struct {
 	AccessToken  string `json:"access_token"`
 	RefreshToken string `json:"refresh_token,omitempty"`

@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════════════
-// Redis Cache Adapter – Driven adapter for caching
+// Adaptador de Caché Redis – Adaptador secundario para almacenamiento en caché
+// Implementa port.CacheRepository usando Redis (go-redis/v9)
 // ═══════════════════════════════════════════════════════════════
 package cache
 
@@ -16,7 +17,7 @@ type redisCache struct {
 	client *redis.Client
 }
 
-// NewRedisCache creates a new Redis cache adapter implementing port.CacheRepository.
+// NewRedisCache crea un nuevo adaptador de caché Redis implementando port.CacheRepository.
 func NewRedisCache(client *redis.Client) port.CacheRepository {
 	return &redisCache{client: client}
 }

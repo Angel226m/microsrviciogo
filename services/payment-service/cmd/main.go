@@ -1,3 +1,7 @@
+// ═══════════════════════════════════════════════════════════════
+// Servicio de Pagos – Punto de Entrada
+// Procesa pagos con tarjeta, reembolsos y transacciones del marketplace
+// ═══════════════════════════════════════════════════════════════
 package main
 
 import (

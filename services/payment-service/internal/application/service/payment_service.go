@@ -1,3 +1,7 @@
+// ═══════════════════════════════════════════════════════════════
+// Capa de Aplicación – Servicio de Pagos (casos de uso)
+// Orquesta procesamiento de pagos, reembolsos y eventos
+// ═══════════════════════════════════════════════════════════════
 package service
 
 import (

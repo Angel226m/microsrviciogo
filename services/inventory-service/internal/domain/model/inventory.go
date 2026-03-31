@@ -1,3 +1,7 @@
+// ═══════════════════════════════════════════════════════════════
+// Modelo de Dominio – Entidades de Inventario
+// Stock, movimientos y tipos de operación de almacén
+// ═══════════════════════════════════════════════════════════════
 package model
 
 import (
@@ -6,6 +10,7 @@ import (
 	"github.com/google/uuid"
 )
 
+// MovementType representa el tipo de movimiento de inventario.
 type MovementType string
 
 const (
@@ -30,12 +35,12 @@ type Stock struct {
 	UpdatedAt       time.Time  `json:"updated_at"`
 }
 
-// Available returns the quantity available for sale.
+// Available devuelve la cantidad disponible para venta.
 func (s *Stock) Available() int {
 	return s.Quantity - s.Reserved
 }
 
-// NeedsReorder checks if stock is below reorder level.
+// NeedsReorder verifica si el stock está por debajo del nivel de reorden.
 func (s *Stock) NeedsReorder() bool {
 	return s.Available() <= s.ReorderLevel
 }

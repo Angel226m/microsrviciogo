@@ -1,3 +1,8 @@
+/**
+ * Store del Carrito – Gestiona los artículos del carrito de compras
+ * Persistido en localStorage bajo la clave 'cloudmart-cart'
+ * Soporta: agregar, eliminar, actualizar cantidad, vaciar, total y conteo
+ */
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { CartItem, Product } from '../types';

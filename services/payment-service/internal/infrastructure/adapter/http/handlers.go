@@ -1,3 +1,7 @@
+// ═══════════════════════════════════════════════════════════════
+// Handlers HTTP – Adaptador primario de Pagos
+// Procesa solicitudes de pago y consulta de transacciones
+// ═══════════════════════════════════════════════════════════════
 package http
 
 import (

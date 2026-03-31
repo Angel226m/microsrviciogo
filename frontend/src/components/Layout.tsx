@@ -1,5 +1,12 @@
+/**
+ * ═══════════════════════════════════════════════════════════════
+ * Layout Principal – Estructura base de la aplicación
+ * Incluye: barra de navegación, menú móvil y pie de página
+ * Implementa diseño responsivo profesional
+ * ═══════════════════════════════════════════════════════════════
+ */
 import { Outlet, Link, NavLink, useLocation } from 'react-router-dom';
-import { ShoppingCart, Package, LogOut, Menu, X, Zap, Shield, Truck, Heart } from 'lucide-react';
+import { ShoppingCart, Package, LogOut, Menu, X, Zap, Shield, Truck, Heart, Award, Headphones } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { useCartStore, type CartState } from '../store/cartStore';
 import { useState, useEffect } from 'react';
@@ -13,8 +20,10 @@ export default function Layout() {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
 
+  // Cerrar menú móvil al cambiar de ruta
   useEffect(() => { setMobileOpen(false); }, [location.pathname]);
 
+  // Detectar scroll para efecto glass en el header
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -29,10 +38,10 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
-      {/* Promo banner */}
-      <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-gray-300 text-center py-2 text-xs font-medium tracking-wide">
+      {/* Banner promocional */}
+      <div className="bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 text-gray-300 text-center py-2.5 text-xs font-medium tracking-wide">
         <Zap className="w-3.5 h-3.5 inline mr-1 -mt-0.5 text-primary-400" />
-        Free shipping on orders over $50 &mdash; Powered by microservices
+        Envío gratis en pedidos mayores a $50 &mdash; Plataforma cloud-native con microservicios
       </div>
 
       {/* Header */}
@@ -56,8 +65,8 @@ export default function Layout() {
 
             {/* Desktop nav */}
             <nav className="hidden md:flex items-center gap-8">
-              <NavLink to="/products" className={navLinkClass}>Products</NavLink>
-              {user && <NavLink to="/orders" className={navLinkClass}>My Orders</NavLink>}
+              <NavLink to="/products" className={navLinkClass}>Productos</NavLink>
+              {user && <NavLink to="/orders" className={navLinkClass}>Mis Pedidos</NavLink>}
             </nav>
 
             {/* Actions */}
@@ -89,14 +98,14 @@ export default function Layout() {
                   <button
                     onClick={logout}
                     className="p-2 rounded-xl text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all duration-200"
-                    title="Logout"
+                    title="Cerrar sesión"
                   >
                     <LogOut className="w-4.5 h-4.5" />
                   </button>
                 </div>
               ) : (
                 <Link to="/login" className="hidden sm:block">
-                  <Button size="sm">Sign In</Button>
+                  <Button size="sm">Iniciar Sesión</Button>
                 </Link>
               )}
 
@@ -119,19 +128,19 @@ export default function Layout() {
           )}
         >
           <div className="px-4 py-4 space-y-1 bg-white">
-            <MobileLink to="/products">Products</MobileLink>
-            {user && <MobileLink to="/orders">My Orders</MobileLink>}
+            <MobileLink to="/products">Productos</MobileLink>
+            {user && <MobileLink to="/orders">Mis Pedidos</MobileLink>}
             {user ? (
               <>
-                <MobileLink to="/profile">Profile</MobileLink>
+                <MobileLink to="/profile">Mi Perfil</MobileLink>
                 <button onClick={logout} className="w-full text-left px-4 py-3 rounded-xl text-red-500 hover:bg-red-50 font-medium text-sm">
-                  Sign Out
+                  Cerrar Sesión
                 </button>
               </>
             ) : (
               <>
-                <MobileLink to="/login">Sign In</MobileLink>
-                <MobileLink to="/register">Create Account</MobileLink>
+                <MobileLink to="/login">Iniciar Sesión</MobileLink>
+                <MobileLink to="/register">Crear Cuenta</MobileLink>
               </>
             )}
           </div>
@@ -156,44 +165,45 @@ export default function Layout() {
                 <span className="text-xl font-extrabold text-white">CloudMart</span>
               </Link>
               <p className="mt-4 text-sm leading-relaxed">
-                Premium cloud-native e-commerce platform. Built with Go microservices, React, and Kubernetes.
+                Plataforma de e-commerce cloud-native premium. Construida con microservicios Go, React y Kubernetes.
               </p>
             </div>
 
             {/* Links */}
             <div>
-              <h4 className="text-white font-semibold text-sm mb-4">Shop</h4>
+              <h4 className="text-white font-semibold text-sm mb-4">Tienda</h4>
               <ul className="space-y-2.5 text-sm">
-                <li><Link to="/products" className="hover:text-white transition-colors">All Products</Link></li>
-                <li><Link to="/products?category=new" className="hover:text-white transition-colors">New Arrivals</Link></li>
-                <li><Link to="/products?category=sale" className="hover:text-white transition-colors">On Sale</Link></li>
+                <li><Link to="/products" className="hover:text-white transition-colors">Todos los Productos</Link></li>
+                <li><Link to="/products?category=new" className="hover:text-white transition-colors">Novedades</Link></li>
+                <li><Link to="/products?category=sale" className="hover:text-white transition-colors">En Oferta</Link></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="text-white font-semibold text-sm mb-4">Account</h4>
+              <h4 className="text-white font-semibold text-sm mb-4">Mi Cuenta</h4>
               <ul className="space-y-2.5 text-sm">
-                <li><Link to="/orders" className="hover:text-white transition-colors">My Orders</Link></li>
-                <li><Link to="/profile" className="hover:text-white transition-colors">Profile</Link></li>
-                <li><Link to="/cart" className="hover:text-white transition-colors">Cart</Link></li>
+                <li><Link to="/orders" className="hover:text-white transition-colors">Mis Pedidos</Link></li>
+                <li><Link to="/profile" className="hover:text-white transition-colors">Perfil</Link></li>
+                <li><Link to="/cart" className="hover:text-white transition-colors">Carrito</Link></li>
               </ul>
             </div>
 
             {/* Features */}
             <div>
-              <h4 className="text-white font-semibold text-sm mb-4">Why CloudMart</h4>
+              <h4 className="text-white font-semibold text-sm mb-4">¿Por qué CloudMart?</h4>
               <ul className="space-y-3 text-sm">
-                <li className="flex items-center gap-2"><Truck className="w-4 h-4 text-primary-400" /> Free Shipping</li>
-                <li className="flex items-center gap-2"><Shield className="w-4 h-4 text-primary-400" /> Secure Payments</li>
-                <li className="flex items-center gap-2"><Heart className="w-4 h-4 text-primary-400" /> Premium Quality</li>
+                <li className="flex items-center gap-2"><Truck className="w-4 h-4 text-primary-400" /> Envío Gratuito</li>
+                <li className="flex items-center gap-2"><Shield className="w-4 h-4 text-primary-400" /> Pagos Seguros</li>
+                <li className="flex items-center gap-2"><Award className="w-4 h-4 text-primary-400" /> Calidad Premium</li>
+                <li className="flex items-center gap-2"><Headphones className="w-4 h-4 text-primary-400" /> Soporte 24/7</li>
               </ul>
             </div>
           </div>
 
           <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col sm:flex-row justify-between items-center gap-4">
-            <p className="text-xs">&copy; {new Date().getFullYear()} CloudMart. All rights reserved.</p>
+            <p className="text-xs">&copy; {new Date().getFullYear()} CloudMart. Todos los derechos reservados.</p>
             <p className="text-xs flex items-center gap-1.5">
-              Built with <Heart className="w-3 h-3 text-red-500 fill-red-500" /> using Go + React + Kubernetes
+              Hecho con <Heart className="w-3 h-3 text-red-500 fill-red-500" /> usando Go + React + Kubernetes
             </p>
           </div>
         </div>

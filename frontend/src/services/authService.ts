@@ -1,3 +1,7 @@
+/**
+ * Servicio de Autenticación – Comunicación con la API de usuarios
+ * Endpoints: login, registro, perfil, actualización de perfil
+ */
 import api from '../lib/api';
 import type { User, AuthTokens } from '../types';
 

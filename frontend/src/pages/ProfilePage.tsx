@@ -1,3 +1,8 @@
+/**
+ * ═══════════════════════════════════════════════════════════════
+ * Página de Perfil – Información del usuario y opciones de cuenta
+ * ═══════════════════════════════════════════════════════════════
+ */
 import { useAuthStore } from '../store/authStore';
 import { Navigate, Link } from 'react-router-dom';
 import { Mail, Calendar, ShoppingBag, Heart, Settings, ChevronRight, Shield, LogOut } from 'lucide-react';
@@ -19,10 +24,10 @@ export default function ProfilePage() {
   const initial = (user.first_name?.[0] ?? user.email[0]).toUpperCase();
 
   const menuItems = [
-    { icon: ShoppingBag, label: 'My Orders', desc: `${orderCount} orders`, to: '/orders' },
-    { icon: Heart, label: 'Wishlist', desc: 'Saved items', to: '#' },
-    { icon: Settings, label: 'Settings', desc: 'Account preferences', to: '#' },
-    { icon: Shield, label: 'Security', desc: 'Password & privacy', to: '#' },
+    { icon: ShoppingBag, label: 'Mis Pedidos', desc: `${orderCount} pedidos`, to: '/orders' },
+    { icon: Heart, label: 'Lista de Deseos', desc: 'Artículos guardados', to: '#' },
+    { icon: Settings, label: 'Configuración', desc: 'Preferencias de cuenta', to: '#' },
+    { icon: Shield, label: 'Seguridad', desc: 'Contraseña y privacidad', to: '#' },
   ];
 
   return (
@@ -53,16 +58,16 @@ export default function ProfilePage() {
               <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
                 <Mail className="w-5 h-5 text-gray-400" />
                 <div className="min-w-0">
-                  <p className="text-xs text-gray-400 font-medium">Email</p>
+                  <p className="text-xs text-gray-400 font-medium">Correo</p>
                   <p className="text-sm text-gray-900 truncate">{user.email}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl">
                 <Calendar className="w-5 h-5 text-gray-400" />
                 <div>
-                  <p className="text-xs text-gray-400 font-medium">Member since</p>
+                  <p className="text-xs text-gray-400 font-medium">Miembro desde</p>
                   <p className="text-sm text-gray-900">
-                    {new Date(user.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                    {new Date(user.created_at).toLocaleDateString('es-MX', { month: 'short', year: 'numeric' })}
                   </p>
                 </div>
               </div>
@@ -73,9 +78,9 @@ export default function ProfilePage() {
         {/* Stats cards */}
         <div className="grid grid-cols-3 gap-3 mt-6 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
           {[
-            { label: 'Orders', value: orderCount, color: 'from-primary-500 to-primary-600' },
-            { label: 'Wishlist', value: 0, color: 'from-pink-500 to-rose-500' },
-            { label: 'Reviews', value: 0, color: 'from-amber-500 to-orange-500' },
+            { label: 'Pedidos', value: orderCount, color: 'from-primary-500 to-primary-600' },
+            { label: 'Deseos', value: 0, color: 'from-pink-500 to-rose-500' },
+            { label: 'Reseñas', value: 0, color: 'from-amber-500 to-orange-500' },
           ].map((stat) => (
             <div key={stat.label} className="bg-white rounded-2xl border border-gray-100 p-4 text-center">
               <p className={`text-2xl font-bold bg-gradient-to-r ${stat.color} bg-clip-text text-transparent`}>
@@ -116,7 +121,7 @@ export default function ProfilePage() {
             icon={<LogOut className="w-4 h-4" />}
             onClick={logout}
           >
-            Sign Out
+            Cerrar Sesión
           </Button>
         </div>
       </div>

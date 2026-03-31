@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════
-// Prometheus Metrics Middleware
-// Records HTTP request duration, count, and response size
+// Middleware de Métricas Prometheus
+// Registra duración, conteo y tamaño de respuestas HTTP
 // ═══════════════════════════════════════════════════════════════
 package middleware
 
@@ -49,7 +49,7 @@ var (
 	)
 )
 
-// MetricsMiddleware records Prometheus metrics for every request.
+// MetricsMiddleware registra métricas Prometheus para cada petición.
 func MetricsMiddleware() func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

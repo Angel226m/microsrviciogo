@@ -1,3 +1,6 @@
+// ═══════════════════════════════════════════════════════════════
+// Puertos de Dominio – Límites hexagonales del servicio de notificaciones
+// ═══════════════════════════════════════════════════════════════
 package port
 
 import (
@@ -7,7 +10,9 @@ import (
 	"github.com/google/uuid"
 )
 
-// Driving port
+// ── Puertos Primarios ─────────────────────────────────────────────────────
+
+// NotificationService define los casos de uso del contexto acotado de notificaciones.
 type NotificationService interface {
 	Send(ctx context.Context, req SendNotificationRequest) (*model.Notification, error)
 	GetByID(ctx context.Context, id uuid.UUID) (*model.Notification, error)
@@ -22,7 +27,7 @@ type SendNotificationRequest struct {
 	Body    string                 `json:"body"`
 }
 
-// Driven ports
+// Puertos secundarios
 type NotificationRepository interface {
 	Create(ctx context.Context, n *model.Notification) error
 	UpdateStatus(ctx context.Context, id uuid.UUID, status model.NotificationStatus) error

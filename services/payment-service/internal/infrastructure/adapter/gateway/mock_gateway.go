@@ -1,4 +1,7 @@
-// Mock payment gateway adapter (simulates Stripe)
+// ═══════════════════════════════════════════════════════════════
+// Pasarela de Pago Simulada (Mock) – Simula Stripe para desarrollo
+// Implementa port.PaymentGateway con 95% de tasa de éxito
+// ═══════════════════════════════════════════════════════════════
 package gateway
 
 import (

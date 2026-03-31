@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "go": true,
+        "Push-Location": true,
+        "ForEach-Object": true,
+        "Pop-Location": true
+    }
+}

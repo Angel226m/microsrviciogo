@@ -1,3 +1,7 @@
+/**
+ * Servicio de Productos – Comunicación con la API de productos
+ * Incluye fallback a datos de demostración cuando la API no está disponible
+ */
 import api from '../lib/api';
 import type { Product, PaginatedResponse, Category, Review } from '../types';
 import { mockProducts, mockCategories } from '../data/mockProducts';
@@ -27,7 +31,7 @@ export const productService = {
     try {
       return await api.get<PaginatedResponse<Product>>('/products', { params }).then((r) => r.data);
     } catch {
-      console.warn('[CloudMart] API unavailable — loading demo products');
+      console.warn('[CloudMart] API no disponible — cargando productos de demostración');
       return getMockPaginated(params);
     }
   },

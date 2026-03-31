@@ -1,3 +1,8 @@
+/**
+ * ═══════════════════════════════════════════════════════════════
+ * Página de Detalle de Producto – Vista completa con galería y reseñas
+ * ═══════════════════════════════════════════════════════════════
+ */
 import { useParams, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { productService } from '../services/productService';
@@ -64,13 +69,13 @@ export default function ProductDetailPage() {
         <div className="w-24 h-24 mx-auto rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center mb-6">
           <Package className="w-12 h-12 text-gray-300" />
         </div>
-        <h2 className="text-2xl font-bold text-gray-900">Product not found</h2>
-        <p className="text-gray-500 mt-2">The product you're looking for doesn't exist.</p>
+        <h2 className="text-2xl font-bold text-gray-900">Producto no encontrado</h2>
+        <p className="text-gray-500 mt-2">El producto que buscas no existe.</p>
         <Link
           to="/products"
           className="inline-block mt-6 px-6 py-3 bg-primary-50 text-primary-600 rounded-xl font-semibold hover:bg-primary-100 transition-colors"
         >
-          Browse Products
+          Explorar Productos
         </Link>
       </div>
     );
@@ -89,9 +94,9 @@ export default function ProductDetailPage() {
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Breadcrumbs */}
         <nav className="flex items-center gap-1.5 text-sm text-gray-500 mb-8 animate-fade-in-up">
-          <Link to="/" className="hover:text-primary-600 transition-colors">Home</Link>
+          <Link to="/" className="hover:text-primary-600 transition-colors">Inicio</Link>
           <ChevronRight className="w-3.5 h-3.5" />
-          <Link to="/products" className="hover:text-primary-600 transition-colors">Products</Link>
+          <Link to="/products" className="hover:text-primary-600 transition-colors">Productos</Link>
           <ChevronRight className="w-3.5 h-3.5" />
           <span className="text-gray-900 font-medium truncate max-w-[200px]">{product.name}</span>
         </nav>
@@ -110,7 +115,7 @@ export default function ProductDetailPage() {
                 <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
                   <div className="text-center">
                     <Package className="w-20 h-20 text-gray-300 mx-auto" />
-                    <p className="text-gray-400 text-sm mt-2">No image available</p>
+                    <p className="text-gray-400 text-sm mt-2">Sin imagen disponible</p>
                   </div>
                 </div>
               )}
@@ -124,7 +129,7 @@ export default function ProductDetailPage() {
                 )}
                 {!inStock && (
                   <span className="bg-gray-900/80 text-white text-sm font-bold px-3 py-1.5 rounded-full backdrop-blur-md">
-                    Out of Stock
+                    Agotado
                   </span>
                 )}
               </div>
@@ -191,7 +196,7 @@ export default function ProductDetailPage() {
                 ))}
               </div>
               <span className="text-sm text-gray-500 font-medium">
-                {product.rating?.toFixed(1)} ({product.review_count} reviews)
+                {product.rating?.toFixed(1)} ({product.review_count} reseñas)
               </span>
             </div>
 
@@ -203,7 +208,7 @@ export default function ProductDetailPage() {
               {hasDiscount && (
                 <>
                   <span className="text-xl text-gray-400 line-through">${product.price.toFixed(2)}</span>
-                  <Badge variant="danger">Save {discountPercent}%</Badge>
+                  <Badge variant="danger">Ahorra {discountPercent}%</Badge>
                 </>
               )}
             </div>
@@ -228,13 +233,13 @@ export default function ProductDetailPage() {
                 <>
                   <div className="w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse" />
                   <span className="text-sm font-medium text-green-700">
-                    {product.stock != null ? `${product.stock} in stock` : 'In stock'}
+                    {product.stock != null ? `${product.stock} en stock` : 'En stock'}
                   </span>
                 </>
               ) : (
                 <>
                   <div className="w-2.5 h-2.5 rounded-full bg-red-500" />
-                  <span className="text-sm font-medium text-red-600">Out of stock</span>
+                  <span className="text-sm font-medium text-red-600">Agotado</span>
                 </>
               )}
             </div>
@@ -263,19 +268,19 @@ export default function ProductDetailPage() {
                 disabled={!inStock}
                 onClick={() => {
                   addItem(product, qty);
-                  toast.success('Added to cart!');
+                  toast.success('¡Añadido al carrito!');
                 }}
               >
-                Add to Cart — ${(price * qty).toFixed(2)}
+                Añadir al Carrito — ${(price * qty).toFixed(2)}
               </Button>
             </div>
 
             {/* Trust features */}
             <div className="mt-8 grid grid-cols-3 gap-4">
               {[
-                { icon: Truck, label: 'Free Shipping', desc: 'Orders over $50' },
-                { icon: Shield, label: 'Secure Payment', desc: '256-bit SSL' },
-                { icon: RotateCcw, label: 'Easy Returns', desc: '30-day policy' },
+                { icon: Truck, label: 'Envío Gratis', desc: 'Pedidos +$50' },
+                { icon: Shield, label: 'Pago Seguro', desc: 'SSL 256 bits' },
+                { icon: RotateCcw, label: 'Devoluciones', desc: 'Política de 30 días' },
               ].map(({ icon: Icon, label, desc }) => (
                 <div key={label} className="text-center p-3 rounded-xl bg-gray-50">
                   <Icon className="w-5 h-5 text-primary-600 mx-auto" />
@@ -292,8 +297,8 @@ export default function ProductDetailPage() {
           <section className="mt-20 animate-fade-in-up">
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h2 className="text-2xl font-bold text-gray-900">Customer Reviews</h2>
-                <p className="text-gray-500 mt-1">{reviews.length} reviews for this product</p>
+                <h2 className="text-2xl font-bold text-gray-900">Reseñas de Clientes</h2>
+                <p className="text-gray-500 mt-1">{reviews.length} reseñas para este producto</p>
               </div>
               <div className="flex items-center gap-2 bg-amber-50 px-4 py-2.5 rounded-xl">
                 <Star className="w-5 h-5 fill-amber-400 text-amber-400" />
@@ -322,7 +327,7 @@ export default function ProductDetailPage() {
                     </div>
                     <div className="flex items-center gap-1.5 text-xs text-gray-400">
                       <Check className="w-3.5 h-3.5 text-green-500" />
-                      Verified
+                      Verificado
                     </div>
                   </div>
                   <h4 className="mt-3 font-semibold text-gray-900">{review.title}</h4>

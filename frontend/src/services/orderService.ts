@@ -1,3 +1,7 @@
+/**
+ * Servicio de Pedidos – Comunicación con la API de órdenes
+ * Endpoints: crear, listar, obtener por ID, cancelar
+ */
 import api from '../lib/api';
 import type { Order, PaginatedResponse } from '../types';
 

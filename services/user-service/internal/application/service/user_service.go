@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════
-// Application Layer – User Service (use cases / business logic)
-// Orchestrates domain entities, repositories, and events
+// Capa de Aplicación – Servicio de Usuario (casos de uso / lógica de negocio)
+// Orquesta entidades de dominio, repositorios y eventos
 // ═══════════════════════════════════════════════════════════════
 package service
 
@@ -24,7 +24,7 @@ var (
 	ErrUserNotFound       = errors.New("user not found")
 )
 
-// userService implements port.UserService with hexagonal architecture.
+// userService implementa port.UserService con arquitectura hexagonal.
 type userService struct {
 	userRepo    port.UserRepository
 	addrRepo    port.AddressRepository
@@ -34,7 +34,7 @@ type userService struct {
 	tokenExpiry time.Duration
 }
 
-// NewUserService creates a new user application service with all dependencies injected.
+// NewUserService crea un nuevo servicio de aplicación de usuario con todas las dependencias inyectadas.
 func NewUserService(
 	userRepo port.UserRepository,
 	addrRepo port.AddressRepository,

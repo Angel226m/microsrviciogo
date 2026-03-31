@@ -1,3 +1,7 @@
+// ═══════════════════════════════════════════════════════════════
+// Adaptador SMTP – Envío de correos electrónicos
+// Implementa port.EmailSender usando gomail para SMTP
+// ═══════════════════════════════════════════════════════════════
 package email
 
 import (

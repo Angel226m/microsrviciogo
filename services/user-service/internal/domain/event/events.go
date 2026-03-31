@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════════════
-// Domain Events – Events emitted by the User bounded context
+// Eventos de Dominio – Eventos emitidos por el contexto acotado de Usuario
+// Comunicación asíncrona con otros microservicios vía NATS
 // ═══════════════════════════════════════════════════════════════
 package event
 

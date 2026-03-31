@@ -1,3 +1,7 @@
+// ═══════════════════════════════════════════════════════════════
+// Repositorio PostgreSQL – Adaptador secundario de Transacciones
+// Implementa port.TransactionRepository usando PostgreSQL (pgx/v5)
+// ═══════════════════════════════════════════════════════════════
 package repository
 
 import (

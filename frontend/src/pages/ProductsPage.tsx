@@ -1,3 +1,8 @@
+/**
+ * ═══════════════════════════════════════════════════════════════
+ * Página de Productos – Catálogo con filtros, búsqueda y paginación
+ * ═══════════════════════════════════════════════════════════════
+ */
 import { useQuery } from '@tanstack/react-query';
 import { useSearchParams } from 'react-router-dom';
 import { productService } from '../services/productService';
@@ -55,10 +60,10 @@ export default function ProductsPage() {
               <Sparkles className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Products</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Productos</h1>
               {data && (
                 <p className="text-sm text-gray-500 mt-0.5">
-                  Showing {data.data?.length ?? 0} of {data.total} products
+                  Mostrando {data.data?.length ?? 0} de {data.total} productos
                 </p>
               )}
             </div>
@@ -73,7 +78,7 @@ export default function ProductsPage() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
               type="text"
-              placeholder="Search by name, category, or keyword..."
+              placeholder="Buscar por nombre, categoría o palabra clave..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-12 pr-12 py-3.5 bg-white border border-gray-200 rounded-2xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-400 outline-none transition-all shadow-sm placeholder:text-gray-400"
@@ -100,7 +105,7 @@ export default function ProductsPage() {
               )}
             >
               <SlidersHorizontal className="w-4 h-4" />
-              <span className="hidden sm:inline">Filters</span>
+              <span className="hidden sm:inline">Filtros</span>
               {hasActiveFilters && (
                 <span className="w-2 h-2 rounded-full bg-primary-500" />
               )}
@@ -137,14 +142,14 @@ export default function ProductsPage() {
             )}
             {category && (
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-accent-50 text-accent-700 rounded-full text-sm font-medium">
-                {categories?.find((c: Category) => c.id === category)?.name ?? 'Category'}
+                {categories?.find((c: Category) => c.id === category)?.name ?? 'Categoría'}
                 <button onClick={() => setSearchParams((p) => { p.delete('category'); p.set('page', '1'); return p; })}>
                   <X className="w-3.5 h-3.5" />
                 </button>
               </span>
             )}
             <button onClick={clearFilters} className="text-sm text-gray-500 hover:text-gray-700 font-medium ml-1">
-              Clear all
+              Limpiar todo
             </button>
           </div>
         )}
@@ -157,10 +162,10 @@ export default function ProductsPage() {
           )}>
             <div className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm sticky top-24">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-gray-900 text-sm uppercase tracking-wider">Categories</h3>
+                <h3 className="font-semibold text-gray-900 text-sm uppercase tracking-wider">Categorías</h3>
                 {category && (
                   <button onClick={() => setSearchParams((p) => { p.delete('category'); return p; })} className="text-xs text-primary-600 font-medium hover:underline">
-                    Reset
+                    Resetear
                   </button>
                 )}
               </div>
@@ -174,7 +179,7 @@ export default function ProductsPage() {
                       : 'text-gray-600 hover:bg-gray-50'
                   )}
                 >
-                  All Products
+                  Todos los Productos
                 </button>
                 {categories?.map((cat: Category) => (
                   <button
@@ -212,15 +217,15 @@ export default function ProductsPage() {
                 <div className="w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center mb-4">
                   <Search className="w-10 h-10 text-gray-300" />
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900">No products found</h3>
+                <h3 className="text-xl font-semibold text-gray-900">No se encontraron productos</h3>
                 <p className="text-gray-500 mt-2 max-w-sm mx-auto">
-                  Try adjusting your search or filter to find what you're looking for.
+                  Intenta ajustar tu búsqueda o filtros para encontrar lo que buscas.
                 </p>
                 <button
                   onClick={clearFilters}
                   className="mt-4 px-5 py-2.5 bg-primary-50 text-primary-600 rounded-xl font-medium text-sm hover:bg-primary-100 transition-colors"
                 >
-                  Clear all filters
+                  Limpiar todos los filtros
                 </button>
               </div>
             ) : (

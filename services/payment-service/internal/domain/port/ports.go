@@ -1,3 +1,7 @@
+// ═══════════════════════════════════════════════════════════════
+// Puertos de Dominio – Límites hexagonales del servicio de pagos
+// Define interfaces para procesador, repositorio y publicador de eventos
+// ═══════════════════════════════════════════════════════════════
 package port
 
 import (
@@ -7,6 +11,9 @@ import (
 	"github.com/google/uuid"
 )
 
+// ── Puertos Primarios ─────────────────────────────────────────────────────
+
+// PaymentService define los casos de uso del contexto acotado de pagos.
 type PaymentService interface {
 	ProcessPayment(ctx context.Context, req ProcessPaymentRequest) (*model.Transaction, error)
 	GetByID(ctx context.Context, id uuid.UUID) (*model.Transaction, error)
@@ -30,10 +37,10 @@ type EventPublisher interface {
 }
 
 type ProcessPaymentRequest struct {
-	OrderID  uuid.UUID             `json:"order_id"`
-	UserID   uuid.UUID             `json:"user_id"`
-	Amount   float64               `json:"amount"`
-	Currency string                `json:"currency"`
-	Method   model.PaymentMethod   `json:"method"`
+	OrderID  uuid.UUID              `json:"order_id"`
+	UserID   uuid.UUID              `json:"user_id"`
+	Amount   float64                `json:"amount"`
+	Currency string                 `json:"currency"`
+	Method   model.PaymentMethod    `json:"method"`
 	Metadata map[string]interface{} `json:"metadata,omitempty"`
 }

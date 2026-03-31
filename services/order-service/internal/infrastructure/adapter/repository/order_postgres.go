@@ -1,3 +1,7 @@
+// ═══════════════════════════════════════════════════════════════
+// Repositorio PostgreSQL – Adaptador secundario de Pedidos
+// Implementa port.OrderRepository usando PostgreSQL (pgx/v5)
+// ═══════════════════════════════════════════════════════════════
 package repository
 
 import (

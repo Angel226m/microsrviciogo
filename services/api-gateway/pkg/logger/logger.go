@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════
-// Logger – Structured logging with Zap
+// Logger – Registro estructurado con Zap
 // ═══════════════════════════════════════════════════════════════
 package logger
 

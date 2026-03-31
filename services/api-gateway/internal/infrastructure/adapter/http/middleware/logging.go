@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════
-// Request Logger Middleware – Structured logging for all requests
+// Middleware de Registro de Peticiones – Logging estructurado para todas las peticiones
 // ═══════════════════════════════════════════════════════════════
 package middleware
 
@@ -11,7 +11,7 @@ import (
 	chimw "github.com/go-chi/chi/v5/middleware"
 )
 
-// RequestLogger returns middleware that logs each HTTP request with structured fields.
+// RequestLogger devuelve un middleware que registra cada petición HTTP con campos estructurados.
 func RequestLogger(log *logger.Logger) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

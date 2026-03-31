@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════════════
-// Domain Ports – Product service hexagonal boundaries
+// Puertos de Dominio – Límites hexagonales del servicio de productos
+// Puertos primarios (entrada) y secundarios (salida)
 // ═══════════════════════════════════════════════════════════════
 package port
 
@@ -10,7 +11,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// ── Driving Ports ─────────────────────────────────────────────────────
+// ── Puertos Primarios ─────────────────────────────────────────────────────
 
 type ProductService interface {
 	List(ctx context.Context, filter model.ProductFilter) (*model.ProductListResult, error)
@@ -24,7 +25,7 @@ type ProductService interface {
 	AddReview(ctx context.Context, req AddReviewRequest) (*model.Review, error)
 }
 
-// ── Driven Ports ──────────────────────────────────────────────────────
+// ── Puertos Secundarios ───────────────────────────────────────────────────
 
 type ProductRepository interface {
 	List(ctx context.Context, filter model.ProductFilter) ([]model.Product, int, error)
@@ -56,7 +57,7 @@ type EventPublisher interface {
 	Publish(ctx context.Context, subject string, data interface{}) error
 }
 
-// ── Request DTOs ──────────────────────────────────────────────────────
+// ── DTOs de Solicitud ──────────────────────────────────────────────────
 
 type CreateProductRequest struct {
 	SKU              string            `json:"sku"`

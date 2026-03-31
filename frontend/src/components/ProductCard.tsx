@@ -1,3 +1,7 @@
+/**
+ * Componente de tarjeta de producto – Vista previa en el catálogo
+ * Incluye imagen, precio, calificación y acción de añadir al carrito
+ */
 import type { Product } from '../types';
 import { Link } from 'react-router-dom';
 import { ShoppingCart, Star, Eye, Package, Heart } from 'lucide-react';
@@ -19,7 +23,7 @@ export default function ProductCard({ product }: Props) {
     e.preventDefault();
     e.stopPropagation();
     addItem(product);
-    toast.success(`${product.name} added to cart`);
+    toast.success(`${product.name} añadido al carrito`);
   };
 
   const price = product.discount_price ?? product.price;
@@ -88,7 +92,7 @@ export default function ProductCard({ product }: Props) {
             )}
             {product.stock != null && product.stock <= 5 && product.stock > 0 && (
               <span className="bg-gradient-to-r from-amber-500 to-orange-500 text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow-lg">
-                Only {product.stock} left
+                Solo {product.stock} restantes
               </span>
             )}
           </div>

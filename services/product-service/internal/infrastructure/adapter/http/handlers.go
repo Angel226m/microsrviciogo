@@ -1,5 +1,6 @@
 // ═══════════════════════════════════════════════════════════════
-// HTTP Handlers – Product driving adapter
+// Handlers HTTP – Adaptador primario de Producto
+// Traduce peticiones HTTP en llamadas al servicio de aplicación
 // ═══════════════════════════════════════════════════════════════
 package http
 

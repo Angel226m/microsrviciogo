@@ -1,3 +1,7 @@
+// ═══════════════════════════════════════════════════════════════
+// Repositorio PostgreSQL – Adaptador secundario de Inventario
+// Implementa port.StockRepository y port.MovementRepository
+// ═══════════════════════════════════════════════════════════════
 package repository
 
 import (

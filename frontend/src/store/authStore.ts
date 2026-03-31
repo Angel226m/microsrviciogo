@@ -1,3 +1,7 @@
+/**
+ * Store de Autenticación – Gestiona el estado del usuario y token JWT
+ * Persistido en localStorage bajo la clave 'cloudmart-auth'
+ */
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import type { User } from '../types';
